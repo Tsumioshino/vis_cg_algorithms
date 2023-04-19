@@ -17,15 +17,28 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Box;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Scale;
+
+
 
 /**
  *
@@ -51,13 +64,15 @@ public class Tilepanecontroller implements Initializable {
                            "Escala",
                            "Projeção Ortogonal",
                            "Perspectiva"));
-    private int tiles_q = 20;
+    private int tiles_q = 10;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        BorderPane p1 = new BorderPane();
+            
         TextField t1 = new TextField();
         TextField t2 = new TextField();
+        
         Button submit = new Button("Submit");
         Button clean = new Button("Clean");
 
@@ -84,48 +99,10 @@ public class Tilepanecontroller implements Initializable {
             // should call some method to choose which algorithm
             System.out.println(choiceBox.getValue());
         });
-              
-        Button increasetile = new Button("+");
-        Button decreasetile = new Button("-");
         
-        increasetile.setOnAction( event -> tiles_q += 1 );
-        decreasetile.setOnAction( event -> tiles_q -= 1 );
 
-        // main tiles
-        TilePane tilePane = new TilePane();
-        tilePane.setId("basePontos");
-        tilePane.setPrefColumns(tiles_q);
-        tilePane.setPrefRows(tiles_q);
-        
-        // cut tiles
-        TilePane tilePane2 = new TilePane(Orientation.VERTICAL);
-        tilePane2.setId("cutPontos");
-        tilePane2.setPrefColumns(tiles_q);
-        tilePane2.setPrefRows(tiles_q);
 
-        List<CheckBox> tiles = new ArrayList<>();
-        List<CheckBox> tiles2 = new ArrayList<>();
-
-        for (int i = tiles_q - 1; i >= 0; i--) {
-            for (int j = 0; j < tiles_q; j++) {
-                CheckBox tile = new CheckBox();
-                tile.getStyleClass().add("selectedCheckBox");
-                tiles.add(tile);
-                coordinates.put(String.format("(%d, %d)", i, j), tile);
-            }
-            CheckBox tile0 = new CheckBox();
-            tile0.getStyleClass().add("selectedCutBox");
-            tiles2.add(tile0);
-            cut_coordinates.put(String.format("(%d)", i), tile0);
-        }
-        tilePane.getChildren().addAll(
-               tiles
-        );
-
-        tilePane2.getChildren().addAll(
-               tiles2
-        );
-        
+        HBox raand = this.tudoReferenteAosBlocos();
         
         
         root.getChildren().add(t1);
@@ -135,10 +112,151 @@ public class Tilepanecontroller implements Initializable {
         
         root.getChildren().add(choiceBox);
 
-        root.getChildren().add(increasetile);
-        root.getChildren().add(decreasetile);
+        root.getChildren().addAll(p1);
+        
+        root.getChildren().add(raand);
 
-        root.getChildren().addAll(tilePane2);
-        root.getChildren().addAll(tilePane);
+    }
+    
+    public HBox tudoReferenteAosBlocos() {
+        
+                // cria a malha
+        TilePane tilePane = new TilePane();
+        tilePane.setId("basePontos");
+        tilePane.setPrefColumns(tiles_q);
+        tilePane.setPrefRows(tiles_q);
+       
+        List<CheckBox> tiles = new ArrayList<>();
+
+        for (int i = tiles_q - 1; i >= 0; i--) {
+            for (int j = 0; j < tiles_q; j++) {
+                String coordenada = String.format("(%d, %d)", j, i);
+                CheckBox tile = new CheckBox();
+                tile.setId(coordenada);
+                tile.getStyleClass().add("selectedCheckBox");
+                tiles.add(tile);
+                coordinates.put(coordenada, tile);
+            }
+        }
+        tilePane.getChildren().addAll(
+               tiles
+        );
+        
+        // caixa dos controles
+        Slider a = new Slider(1, 30, 10);
+        Slider b = new Slider(1, 30, 10);
+
+        
+        VBox sizingVBox = new VBox(
+                new Label("x"),
+                a,
+                new Label("y"),
+                b);
+        
+        Scale scale_down = new Scale(0.25, 0.25, 0, 0); 
+        Scale scale = new Scale(1.25, 1.25, 0, 0); 
+        
+            a.valueProperty().addListener((observable, oldValue, newValue) -> { 
+            Integer ov = oldValue.intValue();
+            Integer nv = newValue.intValue();
+            System.out.println(ov);
+            System.out.println(nv);
+             if (nv > ov) { 
+                List<CheckBox> tiles2 = new ArrayList<>();
+                for (int i = ov; i < nv; i++) {
+                    for (int j = ov; j < nv; j++) {
+                        String coordenada = String.format("(%d, %d)", j, i);
+                        tilePane.setPrefColumns(nv);       
+                        CheckBox tile = new CheckBox();
+                        tile.setId(coordenada);
+                        tile.getStyleClass().add("selectedCheckBox");
+                        tiles2.add(tile);
+                        coordinates.put(coordenada, tile);
+                    }
+                }
+                tilePane.getChildren().addAll(
+               tiles2
+                );
+             }
+             else if (nv < ov) {
+                for (int i = ov; i > nv; i--) {
+                    for (int j = ov; j > nv; j--) {
+                        String coordenada = String.format("(%d, %d)", j, i);
+                        CheckBox tile = new CheckBox();
+                        tile.setId(coordenada);
+                        tilePane.getChildren().remove(tile);
+                        coordinates.remove(coordenada);
+                    }
+                }
+             }
+        });
+               
+            b.valueProperty().addListener((observable, oldValue, newValue) -> { 
+            Double ov = oldValue.doubleValue();
+            Double nv = newValue.doubleValue();
+             if (nv > ov) { tilePane.getTransforms().add(scale); }
+             else if (nv < ov) { tilePane.getTransforms().add(scale_down); }
+        });
+      /*ZoomEvent zoom = new ZoomEvent(
+                ZoomEvent.ANY,
+                200, // !
+                200,
+                200,
+                200,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                1.5,
+                8,
+                null);*/
+                      
+        
+        Slider x = new Slider(1, 100, 10);
+        x.valueProperty().addListener((observable, oldValue, newValue) -> { 
+            Double ov = oldValue.doubleValue();
+            Double nv = newValue.doubleValue();
+             if (nv > ov) { tilePane.getTransforms().add(scale); }
+             else if (nv < ov) { tilePane.getTransforms().add(scale_down); }
+        });
+
+        
+        VBox redimensionVBox = new VBox(
+                new Label("Zoom"),
+                x
+        );
+        
+        TitledPane sizecontrol = new TitledPane(
+                "Controle de Tamanho",
+                sizingVBox
+        );
+        
+        TitledPane redimensioncontrol = new TitledPane(
+                "Controle de Zoom",
+                redimensionVBox
+        );
+        
+
+        sizecontrol.setExpanded( false );
+        redimensioncontrol.setExpanded( true );
+
+        VBox controlVBox = new VBox(sizecontrol, redimensioncontrol);
+
+
+
+        
+        SubScene sub1 = new SubScene(tilePane, 300, 300); 
+
+        HBox rand = new HBox();
+
+        rand.getChildren().addAll(controlVBox, sub1);
+        
+        rand.setFillHeight(false);
+        
+        
+
+        return rand;
     }
 }

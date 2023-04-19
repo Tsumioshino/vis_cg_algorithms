@@ -60,7 +60,9 @@ public class Compgt01 extends Application {
                 scene.setFill(Color.web("#ccffcc"));
                 
         primaryStage.setScene(scene);
-        primaryStage.setResizable (false);
+        primaryStage.setResizable (true);
         primaryStage.show();
     }
+    
+ 
 }
