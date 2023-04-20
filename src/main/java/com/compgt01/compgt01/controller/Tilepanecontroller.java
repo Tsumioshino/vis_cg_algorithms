@@ -1,10 +1,9 @@
 package com.compgt01.compgt01.controller;
 
-
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import javafx.util.Pair;
 import java.util.Map;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -38,41 +38,67 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Scale;
 
-
-
 /**
  *
  * @author mmo
  */
-public class Tilepanecontroller implements Initializable { 
- 
+public class Tilepanecontroller implements Initializable {
+
     @FXML
     private HBox root;
 
-    Map<String, CheckBox> cut_coordinates = new HashMap<>();
+    //  Map<String, CheckBox> cut_coordinates = new HashMap<>();
     Map<String, CheckBox> coordinates = new HashMap<>();
-    
+
     List<String> algorithms = new ArrayList<>(
-                           Arrays.asList("Bresenham",
-                           "Círculo",
-                           "Polilinha",
-                           "Preenchimento Recursivo",
-                           "Varredura",
-                           "Recorte",
-                           "Rotação",
-                           "Translação",
-                           "Escala",
-                           "Projeção Ortogonal",
-                           "Perspectiva"));
+            Arrays.asList("Bresenham",
+                    "Círculo",
+                    "Polilinha",
+                    "Preenchimento Recursivo",
+                    "Varredura",
+                    "Recorte",
+                    "Rotação",
+                    "Translação",
+                    "Escala",
+                    "Projeção Ortogonal",
+                    "Perspectiva"));
     private int tiles_q = 10;
+
+    // Representa as coordenadas para manipulação matemática.
+    // -> 0, caso pixel não pintado. 1, caso pintado.
+    List<List<Integer>> coordinates0 = new ArrayList<>();
     
+    static int[] calculate(String coordenada){
+        char[] chars = coordenada.toCharArray();
+        int[] result = new int[2];
+        
+        int x = Character.getNumericValue(chars[1]);
+        int y = Character.getNumericValue(chars[4]);
+        
+        result[0] = x;
+        result[1] = y;
+        
+        return result;
+   }
+    
+    public void initialize_base() {
+        // acho que vai dar ruim pq e objeto
+        for (int i = 0; i < tiles_q; i++) {
+            ArrayList<Integer> myList = new ArrayList<>(Arrays.asList(new Integer[tiles_q]));
+            Collections.fill(myList, 0);//fills all 10 entries with 0"
+            coordinates0.add(myList);
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        this.initialize_base();
         BorderPane p1 = new BorderPane();
-            
+
         TextField t1 = new TextField();
         TextField t2 = new TextField();
-        
+
         Button submit = new Button("Submit");
         Button clean = new Button("Clean");
 
@@ -83,90 +109,107 @@ public class Tilepanecontroller implements Initializable {
             coordinates.
                     get(String.format("(%s, %s)", x1, y1)).
                     setSelected(true);
-          });
-        
-        clean.setOnAction(e -> {
-            coordinates.forEach( (key, value) -> { value.setSelected(false); });
         });
 
-        t1.setPrefColumnCount(3);    
+        clean.setOnAction(e -> {
+            coordinates.forEach((key, value) -> {
+                value.setSelected(false);
+            });
+        });
+
+        t1.setPrefColumnCount(3);
         t2.setPrefColumnCount(3);
-        
+
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getItems().addAll(algorithms);
-        
+
         choiceBox.setOnAction(e -> {
             // should call some method to choose which algorithm
             System.out.println(choiceBox.getValue());
         });
-        
 
-
+        VBox rrr = new VBox(t1, t2, submit, clean, choiceBox, p1);
         HBox raand = this.tudoReferenteAosBlocos();
-        
-        
-        root.getChildren().add(t1);
-        root.getChildren().add(t2);
-        root.getChildren().add(submit);
-        root.getChildren().add(clean);
-        
-        root.getChildren().add(choiceBox);
 
-        root.getChildren().addAll(p1);
-        
-        root.getChildren().add(raand);
+        TitledPane tt1 = new TitledPane("", rrr);
 
+        StackPane sp = new StackPane(raand, tt1);
+
+        root.getChildren().add(sp);
     }
-    
+
+    private double startX;
+    private double startY;
+
+    public void moveTilePane(TilePane tilePane) {
+        tilePane.setOnMousePressed(e -> {
+            startX = e.getSceneX();
+            startY = e.getSceneY();
+        });
+
+        tilePane.setOnMouseDragged(e -> {
+            tilePane.setTranslateX(e.getSceneX() - startX);
+            tilePane.setTranslateY(e.getSceneY() - startY);
+        });
+    }
+
     public HBox tudoReferenteAosBlocos() {
-        
-                // cria a malha
+
+        // cria a malha
         TilePane tilePane = new TilePane();
         tilePane.setId("basePontos");
-        tilePane.setPrefColumns(tiles_q);
-        tilePane.setPrefRows(tiles_q);
-       
+
         List<CheckBox> tiles = new ArrayList<>();
 
         for (int i = tiles_q - 1; i >= 0; i--) {
             for (int j = 0; j < tiles_q; j++) {
                 String coordenada = String.format("(%d, %d)", j, i);
+                
                 CheckBox tile = new CheckBox();
                 tile.setId(coordenada);
                 tile.getStyleClass().add("selectedCheckBox");
+                
+                
+                tile.setSelected(coordinates0.get(j).get(i) == 1);
+                               
+                tile.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                    int[] coord = calculate(tile.getId());
+                    coordinates0.get(coord[0]).set(coord[1], newValue? 1 : 0); 
+                    System.out.println(coordinates0);
+                });
+                
                 tiles.add(tile);
                 coordinates.put(coordenada, tile);
             }
         }
         tilePane.getChildren().addAll(
-               tiles
+                tiles
         );
-        
+
+        this.moveTilePane(tilePane);
+
         // caixa dos controles
         Slider a = new Slider(1, 30, 10);
         Slider b = new Slider(1, 30, 10);
-
-        
+                
         VBox sizingVBox = new VBox(
                 new Label("x"),
                 a,
                 new Label("y"),
                 b);
-        
-        Scale scale_down = new Scale(0.25, 0.25, 0, 0); 
-        Scale scale = new Scale(1.25, 1.25, 0, 0); 
-        
-            a.valueProperty().addListener((observable, oldValue, newValue) -> { 
+
+        Scale scale_down = new Scale(0.75, 0.75, 0, 0);
+        Scale scale = new Scale(1.25, 1.25, 0, 0);
+
+        a.valueProperty().addListener((observable, oldValue, newValue) -> {
             Integer ov = oldValue.intValue();
             Integer nv = newValue.intValue();
-            System.out.println(ov);
-            System.out.println(nv);
-             if (nv > ov) { 
+            if (nv > ov) {
                 List<CheckBox> tiles2 = new ArrayList<>();
                 for (int i = ov; i < nv; i++) {
                     for (int j = ov; j < nv; j++) {
                         String coordenada = String.format("(%d, %d)", j, i);
-                        tilePane.setPrefColumns(nv);       
+                        tilePane.setPrefColumns(nv);
                         CheckBox tile = new CheckBox();
                         tile.setId(coordenada);
                         tile.getStyleClass().add("selectedCheckBox");
@@ -175,10 +218,9 @@ public class Tilepanecontroller implements Initializable {
                     }
                 }
                 tilePane.getChildren().addAll(
-               tiles2
+                        tiles2
                 );
-             }
-             else if (nv < ov) {
+            } else if (nv < ov) {
                 for (int i = ov; i > nv; i--) {
                     for (int j = ov; j > nv; j--) {
                         String coordenada = String.format("(%d, %d)", j, i);
@@ -188,16 +230,19 @@ public class Tilepanecontroller implements Initializable {
                         coordinates.remove(coordenada);
                     }
                 }
-             }
+            }
         });
-               
-            b.valueProperty().addListener((observable, oldValue, newValue) -> { 
+
+        b.valueProperty().addListener((observable, oldValue, newValue) -> {
             Double ov = oldValue.doubleValue();
             Double nv = newValue.doubleValue();
-             if (nv > ov) { tilePane.getTransforms().add(scale); }
-             else if (nv < ov) { tilePane.getTransforms().add(scale_down); }
+            if (nv > ov) {
+                tilePane.getTransforms().add(scale);
+            } else if (nv < ov) {
+                tilePane.getTransforms().add(scale_down);
+            }
         });
-      /*ZoomEvent zoom = new ZoomEvent(
+        /*ZoomEvent zoom = new ZoomEvent(
                 ZoomEvent.ANY,
                 200, // !
                 200,
@@ -212,50 +257,52 @@ public class Tilepanecontroller implements Initializable {
                 1.5,
                 8,
                 null);*/
-                      
-        
-        Slider x = new Slider(1, 100, 10);
-        x.valueProperty().addListener((observable, oldValue, newValue) -> { 
-            Double ov = oldValue.doubleValue();
-            Double nv = newValue.doubleValue();
-             if (nv > ov) { tilePane.getTransforms().add(scale); }
-             else if (nv < ov) { tilePane.getTransforms().add(scale_down); }
+
+        Slider x = new Slider(1, 5, 3);
+        x.setShowTickLabels​(true);
+        x.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Integer ov = oldValue.intValue();
+            Integer nv = newValue.intValue();
+            if (nv > ov) {
+                tilePane.getTransforms().add(scale);
+            } else if (nv < ov) {
+                tilePane.getTransforms().add(scale_down);
+            }
         });
 
-        
         VBox redimensionVBox = new VBox(
                 new Label("Zoom"),
                 x
         );
-        
+
         TitledPane sizecontrol = new TitledPane(
                 "Controle de Tamanho",
                 sizingVBox
         );
-        
+
         TitledPane redimensioncontrol = new TitledPane(
                 "Controle de Zoom",
                 redimensionVBox
         );
-        
 
-        sizecontrol.setExpanded( false );
-        redimensioncontrol.setExpanded( true );
+        sizecontrol.setExpanded(false);
+        redimensioncontrol.setExpanded(true);
 
         VBox controlVBox = new VBox(sizecontrol, redimensioncontrol);
+        //VBox controlVBox = new VBox();
 
+        tilePane.setPrefColumns(tiles_q);
+        tilePane.setPrefRows(tiles_q);
 
+        HBox rand1 = new HBox();
 
-        
-        SubScene sub1 = new SubScene(tilePane, 300, 300); 
+        rand1.getChildren().add(tilePane);
+
+        SubScene sub1 = new SubScene(rand1, 1000, 1000);
 
         HBox rand = new HBox();
 
         rand.getChildren().addAll(controlVBox, sub1);
-        
-        rand.setFillHeight(false);
-        
-        
 
         return rand;
     }
