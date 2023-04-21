@@ -64,20 +64,21 @@ public class Tilepanecontroller implements Initializable {
                     "Projeção Ortogonal",
                     "Perspectiva"));
     private int tiles_q = 10;
+        private int total = 100;
+
 
     // Representa as coordenadas para manipulação matemática.
     // -> 0, caso pixel não pintado. 1, caso pintado.
     List<List<Integer>> matrixpixel = new ArrayList<>();
 
-    static int[] calculate(String coordenada) {
-        char[] chars = coordenada.toCharArray();
+    static int[] calculate(String coordenada) { 
+
         int[] result = new int[2];
+        
+        int commaLoc = coordenada.strip().indexOf(",");
 
-        int x = Character.getNumericValue(chars[4]);
-        int y = Character.getNumericValue(chars[1]);
-
-        result[0] = x;
-        result[1] = y;
+        result[0] = Integer.parseInt(coordenada.substring(commaLoc + 2, coordenada.length()-1));
+        result[1] = Integer.parseInt(coordenada.substring(1,commaLoc));
 
         return result;
     }
@@ -221,8 +222,7 @@ public class Tilepanecontroller implements Initializable {
         });
     }
 
-    public CheckBox createTile(int x, int y) {
-        System.out.println(coordinates);
+    public CheckBox createTile(int x, int y, boolean n) {
 
         CheckBox tile = new CheckBox();
         tile.setId(String.format("(%d, %d)", x, y));
@@ -232,22 +232,23 @@ public class Tilepanecontroller implements Initializable {
         tile.setSelected(matrixpixel.get(y).get(x) == 1);
         tile.selectedProperty().addListener((observable, oldValue, newValue) -> {
             int[] coord = calculate(tile.getId());
-            matrixpixel.get(coord[0]).add(coord[1], newValue ? 1 : 0);
+            System.out.println(tile.getId());
+
+            matrixpixel.get(coord[0]).set(coord[1], newValue ? 1 : 0);
+                    System.out.println(matrixpixel);
+
         });
-
-        System.out.println(y);
-        System.out.println(x);
-
+        
+        if (n) {
         coordinates.get(y).add(x, tile);
-        System.out.println(y);
-        System.out.println(x);
+        }
         return tile;
     }
 
     private int getAbsoluteTilePosition(int x, int y) {
         int acumulo = 0;
         int rowsize = matrixpixel.get(0).size();
-
+        // (10, 9) should return 10
         for (int i = 0; i <= y; i++) {
             if (!(i == y)) {
                 acumulo += rowsize;
@@ -260,6 +261,40 @@ public class Tilepanecontroller implements Initializable {
         return acumulo;
 
     }
+    
+        private int getAbsoluteTilePosition2(int x, int y) {
+        int acumulo = 0;
+        int rowsize = matrixpixel.get(0).size();
+        // (10, 9) should return 10// 10x11 -- 11, 10
+        for (int i = matrixpixel.size()-1; i >= y; i--) {
+            if (!(i == y)) {
+                acumulo += rowsize;
+                continue;
+            }
+            for (int j = 0; j < x; j++) {
+                acumulo += 1;
+            }
+        }
+        return acumulo;
+
+    }
+        
+    private void reajusteTP(TilePane tP, int ov, int nv) {
+                for (int i = 0; i < matrixpixel.size(); i++) {
+                    for (int j = ov; j < nv; j++) {
+                        CheckBox tile2 = this.createTile(j, i, false);
+                        tile2.setId(String.format("(%d, %d)", j, i));
+                        
+                        System.out.println(this.getAbsoluteTilePosition(j, i));
+
+                        //xxx.add(this.getAbsoluteTilePosition(j, i));
+                        tP.getChildren().add(this.getAbsoluteTilePosition(j, i), tile2);
+                        
+                        // tilePane.getChildren().add(n+m, tile2);
+                    }
+                }
+
+    }
 
     public HBox tudoReferenteAosBlocos() {
 
@@ -269,7 +304,7 @@ public class Tilepanecontroller implements Initializable {
 
         for (int i = tiles_q - 1; i >= 0; i--) {
             for (int j = 0; j < tiles_q; j++) {
-                CheckBox tile = createTile(j, i);
+                CheckBox tile = createTile(j, i, true);
                 tile.setId(String.format("(%d, %d)", j, i));
                 tilePane.getChildren().add(tile);
             }
@@ -300,19 +335,28 @@ public class Tilepanecontroller implements Initializable {
 
                 tiles_q = nv;
                 this.reajusteMatrizBase(nv, 0);
+                this.reajusteTP(tilePane, ov, nv);
 
-                for (int i = 0; i < matrixpixel.size(); i++) {
+                total = nv*this.matrixpixel.size();
+                tilePane.setPrefColumns(nv);
+                
+                for (int i = matrixpixel.size()-1; i >= 0; i--) {
                     for (int j = ov; j < nv; j++) {
-                        CheckBox tile2 = this.createTile(j, i);
+                        CheckBox tile2 = this.createTile(j, i, true);
                         tile2.setId(String.format("(%d, %d)", j, i));
+                        
+                        System.out.println(this.getAbsoluteTilePosition(j, i));
+                        System.out.println(total-this.getAbsoluteTilePosition(j, i));
 
-                        tilePane.getChildren().add(this.getAbsoluteTilePosition(j, i), tile2);
-
+                        //xxx.add(this.getAbsoluteTilePosition(j, i));
+                        tilePane.getChildren().set(
+                                this.getAbsoluteTilePosition2(j, i),
+                                tile2);
+                        
                         // tilePane.getChildren().add(n+m, tile2);
                     }
                 }
-                tilePane.setPrefColumns(matrixpixel.size());
-                tilePane.setPrefRows(matrixpixel.get(0).size());
+
             } else if (nv < ov) {
                 tiles_q = nv;
 
