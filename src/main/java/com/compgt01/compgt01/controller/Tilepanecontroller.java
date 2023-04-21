@@ -16,6 +16,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -48,7 +49,7 @@ public class Tilepanecontroller implements Initializable {
     private HBox root;
 
     //  Map<String, CheckBox> cut_coordinates = new HashMap<>();
-    Map<String, CheckBox> coordinates = new HashMap<>();
+    List<List<CheckBox>> coordinates = new ArrayList<>();
 
     List<String> algorithms = new ArrayList<>(
             Arrays.asList("Bresenham",
@@ -66,59 +67,126 @@ public class Tilepanecontroller implements Initializable {
 
     // Representa as coordenadas para manipulação matemática.
     // -> 0, caso pixel não pintado. 1, caso pintado.
-    List<List<Integer>> coordinates0 = new ArrayList<>();
-    
-    static int[] calculate(String coordenada){
+    List<List<Integer>> matrixpixel = new ArrayList<>();
+
+    static int[] calculate(String coordenada) {
         char[] chars = coordenada.toCharArray();
         int[] result = new int[2];
-        
-        int x = Character.getNumericValue(chars[1]);
-        int y = Character.getNumericValue(chars[4]);
-        
+
+        int x = Character.getNumericValue(chars[4]);
+        int y = Character.getNumericValue(chars[1]);
+
         result[0] = x;
         result[1] = y;
-        
+
         return result;
-   }
-    
+    }
+
     public void initialize_base() {
         // acho que vai dar ruim pq e objeto
         for (int i = 0; i < tiles_q; i++) {
             ArrayList<Integer> myList = new ArrayList<>(Arrays.asList(new Integer[tiles_q]));
             Collections.fill(myList, 0);//fills all 10 entries with 0"
-            coordinates0.add(myList);
+            matrixpixel.add(myList);
+            ArrayList<CheckBox> myList2 = new ArrayList<>(tiles_q);
+
+            for (int j = 0; j < tiles_q; j++) {
+
+                myList2.add(new CheckBox());
+            }
+            coordinates.add(myList2);
         }
+        System.out.println(matrixpixel);
+
+        System.out.println(coordinates);
+    }
+
+    private void reajusteMatrizBase(int x, int y) {
+        if (x > 0) {
+            int basej = matrixpixel.get(0).size();
+            for (int i = 0; i < matrixpixel.size(); i++) {
+                for (int j = basej; j < x; j++) {
+                    matrixpixel.get(i).add(j, 0);
+                    coordinates.get(i).add(j, new CheckBox());
+
+                }
+            }
+        }
+        //todo
+
+        if (y > 0) {
+            int basei = matrixpixel.size();
+            for (int i = basei; i < y; i++) {
+
+                ArrayList<Integer> myList = new ArrayList<>(
+                        Arrays.asList(new Integer[matrixpixel.get(0).size()])
+                );
+                Collections.fill(myList, 0);//fills all 10 entries with 0"
+                matrixpixel.add(basei, myList);
+            }
+        }
+
+    }
+
+    private void reajusteMatrizBase2(int x, int y) {
+        if (x > 0) {
+            int basej = matrixpixel.get(0).size() - (matrixpixel.get(0).size() - x);
+            for (int i = 0; i < matrixpixel.size(); i++) {
+                for (int j = basej; j < x; j++) {
+                    matrixpixel.get(i).remove(j);
+
+                }
+            }
+        }
+        //todo
+        if (y > 0) {
+            int basei = matrixpixel.size();
+            for (int i = basei; i < y; i++) {
+
+                ArrayList<Integer> myList = new ArrayList<>(
+                        Arrays.asList(new Integer[matrixpixel.get(0).size()])
+                );
+                Collections.fill(myList, 0);//fills all 10 entries with 0"
+                matrixpixel.add(basei, myList);
+            }
+        }
+
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         this.initialize_base();
+
         BorderPane p1 = new BorderPane();
 
-        TextField t1 = new TextField();
-        TextField t2 = new TextField();
+        TextField textx = new TextField();
+        TextField texty = new TextField();
 
         Button submit = new Button("Submit");
         Button clean = new Button("Clean");
 
         submit.setOnAction(e -> {
             //Retrieving data
-            String x1 = t1.getText().strip();
-            String y1 = t2.getText().strip();
+            Integer x1 = Integer.valueOf(textx.getText().strip());
+            Integer y1 = Integer.valueOf(texty.getText().strip());
+
             coordinates.
-                    get(String.format("(%s, %s)", x1, y1)).
+                    get(y1).
+                    get(x1).
                     setSelected(true);
         });
 
         clean.setOnAction(e -> {
-            coordinates.forEach((key, value) -> {
-                value.setSelected(false);
+            coordinates.forEach(row -> {
+                row.forEach(value -> {
+                    value.setSelected(false);
+                });
             });
         });
 
-        t1.setPrefColumnCount(3);
-        t2.setPrefColumnCount(3);
+        textx.setPrefColumnCount(3);
+        texty.setPrefColumnCount(3);
 
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getItems().addAll(algorithms);
@@ -128,7 +196,7 @@ public class Tilepanecontroller implements Initializable {
             System.out.println(choiceBox.getValue());
         });
 
-        VBox rrr = new VBox(t1, t2, submit, clean, choiceBox, p1);
+        VBox rrr = new VBox(textx, texty, submit, clean, choiceBox, p1);
         HBox raand = this.tudoReferenteAosBlocos();
 
         TitledPane tt1 = new TitledPane("", rrr);
@@ -141,16 +209,56 @@ public class Tilepanecontroller implements Initializable {
     private double startX;
     private double startY;
 
-    public void moveTilePane(TilePane tilePane) {
-        tilePane.setOnMousePressed(e -> {
+    public void makeAnythingDraggable(Node elemento) {
+        elemento.setOnMousePressed(e -> {
             startX = e.getSceneX();
             startY = e.getSceneY();
         });
 
-        tilePane.setOnMouseDragged(e -> {
-            tilePane.setTranslateX(e.getSceneX() - startX);
-            tilePane.setTranslateY(e.getSceneY() - startY);
+        elemento.setOnMouseDragged(e -> {
+            elemento.setTranslateX(e.getSceneX() - startX);
+            elemento.setTranslateY(e.getSceneY() - startY);
         });
+    }
+
+    public CheckBox createTile(int x, int y) {
+        System.out.println(coordinates);
+
+        CheckBox tile = new CheckBox();
+        tile.setId(String.format("(%d, %d)", x, y));
+
+        tile.getStyleClass().add("selectedCheckBox");
+
+        tile.setSelected(matrixpixel.get(y).get(x) == 1);
+        tile.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            int[] coord = calculate(tile.getId());
+            matrixpixel.get(coord[0]).add(coord[1], newValue ? 1 : 0);
+        });
+
+        System.out.println(y);
+        System.out.println(x);
+
+        coordinates.get(y).add(x, tile);
+        System.out.println(y);
+        System.out.println(x);
+        return tile;
+    }
+
+    private int getAbsoluteTilePosition(int x, int y) {
+        int acumulo = 0;
+        int rowsize = matrixpixel.get(0).size();
+
+        for (int i = 0; i <= y; i++) {
+            if (!(i == y)) {
+                acumulo += rowsize;
+                continue;
+            }
+            for (int j = 0; j < x; j++) {
+                acumulo += 1;
+            }
+        }
+        return acumulo;
+
     }
 
     public HBox tudoReferenteAosBlocos() {
@@ -159,87 +267,82 @@ public class Tilepanecontroller implements Initializable {
         TilePane tilePane = new TilePane();
         tilePane.setId("basePontos");
 
-        List<CheckBox> tiles = new ArrayList<>();
-
         for (int i = tiles_q - 1; i >= 0; i--) {
             for (int j = 0; j < tiles_q; j++) {
-                String coordenada = String.format("(%d, %d)", j, i);
-                
-                CheckBox tile = new CheckBox();
-                tile.setId(coordenada);
-                tile.getStyleClass().add("selectedCheckBox");
-                
-                
-                tile.setSelected(coordinates0.get(j).get(i) == 1);
-                               
-                tile.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                    int[] coord = calculate(tile.getId());
-                    coordinates0.get(coord[0]).set(coord[1], newValue? 1 : 0); 
-                    System.out.println(coordinates0);
-                });
-                
-                tiles.add(tile);
-                coordinates.put(coordenada, tile);
+                CheckBox tile = createTile(j, i);
+                tile.setId(String.format("(%d, %d)", j, i));
+                tilePane.getChildren().add(tile);
             }
         }
-        tilePane.getChildren().addAll(
-                tiles
-        );
 
-        this.moveTilePane(tilePane);
+        this.makeAnythingDraggable(tilePane);
 
         // caixa dos controles
-        Slider a = new Slider(1, 30, 10);
-        Slider b = new Slider(1, 30, 10);
-                
+        Slider addcolumnx = new Slider(1, 12, 10);
+        Slider addrowy = new Slider(1, 12, 10);
+
         VBox sizingVBox = new VBox(
                 new Label("x"),
-                a,
+                addcolumnx,
                 new Label("y"),
-                b);
+                addrowy);
 
-        Scale scale_down = new Scale(0.75, 0.75, 0, 0);
+        Scale scaledown = new Scale(0.75, 0.75, 0, 0);
         Scale scale = new Scale(1.25, 1.25, 0, 0);
 
-        a.valueProperty().addListener((observable, oldValue, newValue) -> {
+        addcolumnx.valueProperty().addListener((observable, oldValue, newValue) -> {
             Integer ov = oldValue.intValue();
             Integer nv = newValue.intValue();
             if (nv > ov) {
-                List<CheckBox> tiles2 = new ArrayList<>();
-                for (int i = ov; i < nv; i++) {
+                if (tiles_q >= nv) {
+                    return;
+                }
+
+                tiles_q = nv;
+                this.reajusteMatrizBase(nv, 0);
+
+                for (int i = 0; i < matrixpixel.size(); i++) {
                     for (int j = ov; j < nv; j++) {
-                        String coordenada = String.format("(%d, %d)", j, i);
-                        tilePane.setPrefColumns(nv);
-                        CheckBox tile = new CheckBox();
-                        tile.setId(coordenada);
-                        tile.getStyleClass().add("selectedCheckBox");
-                        tiles2.add(tile);
-                        coordinates.put(coordenada, tile);
+                        CheckBox tile2 = this.createTile(j, i);
+                        tile2.setId(String.format("(%d, %d)", j, i));
+
+                        tilePane.getChildren().add(this.getAbsoluteTilePosition(j, i), tile2);
+
+                        // tilePane.getChildren().add(n+m, tile2);
                     }
                 }
-                tilePane.getChildren().addAll(
-                        tiles2
-                );
+                tilePane.setPrefColumns(matrixpixel.size());
+                tilePane.setPrefRows(matrixpixel.get(0).size());
             } else if (nv < ov) {
-                for (int i = ov; i > nv; i--) {
-                    for (int j = ov; j > nv; j--) {
-                        String coordenada = String.format("(%d, %d)", j, i);
-                        CheckBox tile = new CheckBox();
-                        tile.setId(coordenada);
-                        tilePane.getChildren().remove(tile);
-                        coordinates.remove(coordenada);
+                tiles_q = nv;
+
+                this.reajusteMatrizBase2(nv, 0);
+
+                for (int i = ov-1; i >= 0; i--) {
+                    for (int j = ov-1; j > nv-1; j--) {
+                                                System.err.println(j);
+                                                 System.err.println(i);
+
+
+                        tilePane.getChildren().remove(
+                                this.getAbsoluteTilePosition(j, i)
+                        );
+                        System.err.println("f1");
+                        coordinates.get(i).remove(j);
+                        System.err.println("f2");
+
                     }
                 }
             }
         });
 
-        b.valueProperty().addListener((observable, oldValue, newValue) -> {
+        addrowy.valueProperty().addListener((observable, oldValue, newValue) -> {
             Double ov = oldValue.doubleValue();
             Double nv = newValue.doubleValue();
             if (nv > ov) {
                 tilePane.getTransforms().add(scale);
             } else if (nv < ov) {
-                tilePane.getTransforms().add(scale_down);
+                tilePane.getTransforms().add(scaledown);
             }
         });
         /*ZoomEvent zoom = new ZoomEvent(
@@ -258,21 +361,21 @@ public class Tilepanecontroller implements Initializable {
                 8,
                 null);*/
 
-        Slider x = new Slider(1, 5, 3);
-        x.setShowTickLabels​(true);
-        x.valueProperty().addListener((observable, oldValue, newValue) -> {
+        Slider scalezoom = new Slider(1, 5, 3);
+        scalezoom.setShowTickLabels​(true);
+        scalezoom.valueProperty().addListener((observable, oldValue, newValue) -> {
             Integer ov = oldValue.intValue();
             Integer nv = newValue.intValue();
             if (nv > ov) {
                 tilePane.getTransforms().add(scale);
             } else if (nv < ov) {
-                tilePane.getTransforms().add(scale_down);
+                tilePane.getTransforms().add(scaledown);
             }
         });
 
         VBox redimensionVBox = new VBox(
                 new Label("Zoom"),
-                x
+                scalezoom
         );
 
         TitledPane sizecontrol = new TitledPane(
@@ -306,4 +409,5 @@ public class Tilepanecontroller implements Initializable {
 
         return rand;
     }
+
 }
