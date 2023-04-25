@@ -36,6 +36,10 @@ public class Transformacoes {
 
     }
 
+    public static void main(String[] args) {
+        
+    }
+
     public static void bresenham(int x1, int y1, int x2, int y2) {
         int slope;
         int dx, dy, incE, incNE, d, x, y;
