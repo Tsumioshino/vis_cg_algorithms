@@ -129,11 +129,12 @@ public class MenuController {
                     Integer y02 = Integer.valueOf(y2.getText().strip());
                     Transformacoes.bresenham(this, malhaController, x01, y01, x02, y02);
                     break;
-                // case ("Círculo"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
+                case ("Círculo"):
+                    Transformacoes.desenharCirculo(this, malhaController, Integer.valueOf(x2.getText()
+                            .strip()), Integer.valueOf(
+                                    x1.getText().strip()),
+                            Integer.valueOf(y1.getText().strip()));
+                    break;
                 // case ("Polilinha"):
                 // Integer x1 = Integer.valueOf(textx.getText().strip());
                 // Integer y1 = Integer.valueOf(texty.getText().strip());
