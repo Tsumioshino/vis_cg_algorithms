@@ -1,4 +1,4 @@
-package com.compgt01.compgt01.controller;
+package com.compgt01.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,9 +48,9 @@ public class MenuControle implements Initializable {
                     "Projeção Ortogonal",
                     "Perspectiva")
                     );
-     
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-    }    
+    }
 }

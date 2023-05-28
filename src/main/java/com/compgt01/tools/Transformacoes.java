@@ -1,4 +1,4 @@
-package com.compgt01.compgt01.tools;
+package com.compgt01.tools;
 
 public class Transformacoes {
 
@@ -37,7 +37,7 @@ public class Transformacoes {
     }
 
     public static void main(String[] args) {
-        
+
     }
 
     public static void bresenham(int x1, int y1, int x2, int y2) {

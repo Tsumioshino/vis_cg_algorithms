@@ -12,20 +12,19 @@
 <?import javafx.scene.control.TextField?>
 
 
-<HBox fx:id="root" 
-      xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.compgt01.compgt01.controller.Tilepanecontroller">
+<HBox fx:id="root"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.compgt01.controller.Tilepanecontroller">
 <children>
  <VBox fx:id="menuV">
     <children>
-           
+
         <HBox>
 
-        </HBox>  
+        </HBox>
     </children>
 
 
  </VBox>
 </children>
 </HBox>
-
