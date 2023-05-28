@@ -45,7 +45,10 @@
                 <TextField fx:id="newx" prefColumnCount="3" />
                 <TextField fx:id="newy" prefColumnCount="3" />
                 <Button fx:id="clear" text="Destroy" onAction="#onDestruction" />
-
+                <TextField fx:id="x1" prefColumnCount="3" />
+                <TextField fx:id="y1" prefColumnCount="3" />
+                <TextField fx:id="x2" prefColumnCount="3" />
+                <TextField fx:id="y2" prefColumnCount="3" />
             </VBox>
         </left>
     </BorderPane>

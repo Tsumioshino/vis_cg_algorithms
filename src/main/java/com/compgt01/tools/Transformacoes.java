@@ -1,5 +1,8 @@
 package com.compgt01.tools;
 
+import com.compgt01.controller.MalhaController;
+import com.compgt01.controller.MenuController;
+
 public class Transformacoes {
 
     /**
@@ -40,7 +43,9 @@ public class Transformacoes {
         bresenham(0, 0, 3, 5);
     }
 
-    public static void bresenham(int x1, int y1, int x2, int y2) {
+    public static void bresenham(MenuController menuController,
+            MalhaController malhaController,
+            int x1, int y1, int x2, int y2) {
         int slope;
         int dx, dy, incE, incNE, d, x, y;
         // Onde inverte a linha x1 > x2
@@ -64,6 +69,10 @@ public class Transformacoes {
         y = y1;
         for (x = x1; x <= x2; x++) {
             System.out.printf("x:%d y:%d %n", x, y); // AQUI TEM OS PONTOS A SEREM PINTADOS
+            malhaController.getMalhaModel().getCoordinates()
+                    .get(y + menuController.getMalhaModel().getY())
+                    .get(x + menuController.getMalhaModel().getX())
+                    .setSelected(true);
             if (d <= 0) {
                 d += incE;
             } else {

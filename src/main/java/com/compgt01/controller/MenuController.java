@@ -1,6 +1,7 @@
 package com.compgt01.controller;
 
 import com.compgt01.model.MalhaModel;
+import com.compgt01.tools.Transformacoes;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +23,15 @@ public class MenuController {
 
     @FXML
     private TitledPane root;
+
+    @FXML
+    private TextField x1;
+    @FXML
+    private TextField y1;
+    @FXML
+    private TextField x2;
+    @FXML
+    private TextField y2;
 
     @FXML
     private TextField textx;
@@ -113,9 +123,11 @@ public class MenuController {
         choiceBox.setOnAction(event -> {
             switch (choiceBox.getValue()) {
                 case ("Bresenham"):
-                    // Integer x1 = Integer.valueOf(textx.getText().strip());
-                    // Integer y1 = Integer.valueOf(texty.getText().strip());
-                    // Transformacoes.bresenham(x1, y1, x2, y2);
+                    Integer x01 = Integer.valueOf(x1.getText().strip());
+                    Integer y01 = Integer.valueOf(y1.getText().strip());
+                    Integer x02 = Integer.valueOf(x2.getText().strip());
+                    Integer y02 = Integer.valueOf(y2.getText().strip());
+                    Transformacoes.bresenham(this, malhaController, x01, y01, x02, y02);
                     break;
                 // case ("Círculo"):
                 // Integer x1 = Integer.valueOf(textx.getText().strip());
