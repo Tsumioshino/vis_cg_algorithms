@@ -17,7 +17,7 @@ public class Transformacoes {
      * @param matriz
      * @return
      */
-    public static int[][] translacao(int[] pontos, int[][] matriz){
+    public static int[][] translacao(int[] pontos, int[][] matriz) {
         for (int row = 0; row < matriz.length; row++) {
             for (int col = 0; col < matriz[row].length; col++) {
                 matriz[row][col] = matriz[row][col] + pontos[col];
@@ -37,7 +37,7 @@ public class Transformacoes {
     }
 
     public static void main(String[] args) {
-
+        bresenham(0, 0, 3, 5);
     }
 
     public static void bresenham(int x1, int y1, int x2, int y2) {
@@ -73,4 +73,15 @@ public class Transformacoes {
         }
     }
 
+    static int[] calculate(String coordenada) {
+
+        int[] result = new int[2];
+
+        int commaLoc = coordenada.strip().indexOf(",");
+
+        result[0] = Integer.parseInt(coordenada.substring(commaLoc + 2, coordenada.length() - 1));
+        result[1] = Integer.parseInt(coordenada.substring(1, commaLoc));
+
+        return result;
+    }
 }

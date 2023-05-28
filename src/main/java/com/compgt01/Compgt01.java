@@ -3,41 +3,22 @@ package com.compgt01;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ColorPicker;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Compgt01 extends Application {
-    // private static final Logger logger = System.getLogger("MAIN");
-
     public static void main(String[] args) {
         launch(args);
     }
 
     public void start(Stage primaryStage) throws Exception {
-        // Rotate camera to use Y up.
-        // Camera camera = new PerspectiveCamera();
-        // camera.setRotationAxis(Rotate.Z_AXIS);
-        // camera.setRotate(180.0);
-
-        // Rotate scene content for correct drawing.
-        // Group yUp = new Group();
-        // yUp.setRotationAxis(Rotate.Z_AXIS);
-        // yUp.setRotate(180.0);
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
-
-        final ColorPicker colorPicker = new ColorPicker();
-
-        colorPicker.setOnAction(e -> {
-            Color c = colorPicker.getValue();
-            System.out.println("New Color's RGB = " + c.getRed() + " " + c.getGreen() + " " + c.getBlue());
-        });
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("main.fxml"));
 
         primaryStage.setTitle("CheckBox Experiment 1");
-        Pane box = loader.<TilePane>load();
+        Pane box = loader.<HBox>load();
 
         Scene scene = new Scene(box);
         String csslink = getClass().getResource("styles.css").toExternalForm();
