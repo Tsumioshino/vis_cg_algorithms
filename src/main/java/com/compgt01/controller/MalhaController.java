@@ -1,10 +1,10 @@
-package com.compgt01.compgt01.controller;
+package com.compgt01.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.compgt01.compgt01.model.MalhaModel;
+import com.compgt01.model.MalhaModel;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;

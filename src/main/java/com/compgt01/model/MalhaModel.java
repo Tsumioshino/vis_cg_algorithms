@@ -1,4 +1,4 @@
-package com.compgt01.compgt01.model;
+package com.compgt01.model;
 
 import java.util.ArrayList;
 import java.util.List;

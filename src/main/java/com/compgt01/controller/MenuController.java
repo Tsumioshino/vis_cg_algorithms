@@ -1,15 +1,14 @@
-package com.compgt01.compgt01.controller;
+package com.compgt01.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.compgt01.model.MalhaModel;
 
-import com.compgt01.compgt01.model.MalhaModel;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -35,6 +34,9 @@ public class MenuController {
 
     @FXML
     private Button clean;
+
+    @FXML
+    private ChoiceBox<String> choiceBox;
 
     @FXML
     private Slider addcolumnx;
@@ -86,19 +88,18 @@ public class MenuController {
         this.malhaController = malhaController;
     }
 
-    List<String> algorithms = new ArrayList<>(
-            Arrays.asList(
-                    "Bresenham",
-                    "Círculo",
-                    "Polilinha",
-                    "Preenchimento Recursivo",
-                    "Varredura",
-                    "Recorte",
-                    "Rotação",
-                    "Translação",
-                    "Escala",
-                    "Projeção Ortogonal",
-                    "Perspectiva"));
+    ObservableList<String> algorithms = FXCollections.observableArrayList(
+            "Bresenham",
+            "Círculo",
+            "Polilinha",
+            "Preenchimento Recursivo",
+            "Varredura",
+            "Recorte",
+            "Rotação",
+            "Translação",
+            "Escala",
+            "Projeção Ortogonal",
+            "Perspectiva");
 
     @FXML
     private void initialize() {
@@ -107,6 +108,70 @@ public class MenuController {
 
     @FXML
     public void initializeListeners() {
+        choiceBox.setItems(algorithms);
+
+        choiceBox.setOnAction(event -> {
+            switch (choiceBox.getValue()) {
+                case ("Bresenham"):
+                    // Integer x1 = Integer.valueOf(textx.getText().strip());
+                    // Integer y1 = Integer.valueOf(texty.getText().strip());
+                    // Transformacoes.bresenham(x1, y1, x2, y2);
+                    break;
+                // case ("Círculo"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Polilinha"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Preenchimento Recursivo"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Recorte"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Varredura"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Rotação"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Translação"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Escala"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Projeção Ortogonal"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                // case ("Perspectiva"):
+                // Integer x1 = Integer.valueOf(textx.getText().strip());
+                // Integer y1 = Integer.valueOf(texty.getText().strip());
+                // Transformacoes.bresenham(x1, y1, x2, y2);
+                // break;
+                default:
+                    break;
+            }
+        });
+
         addcolumnx.valueProperty().addListener((observable, oldValue, newValue) -> {
             Integer ov = oldValue.intValue();
             Integer nv = newValue.intValue();

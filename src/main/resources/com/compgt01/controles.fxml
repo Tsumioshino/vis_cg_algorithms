@@ -13,7 +13,7 @@
 
 <TitledPane fx:id="root1" 
     xmlns:fx="http://javafx.com/fxml/1" 
-    fx:controller="com.compgt01.compgt01.controller.MenuController">
+    fx:controller="com.compgt01.controller.MenuController">
     <BorderPane>
         <left>
             <VBox>

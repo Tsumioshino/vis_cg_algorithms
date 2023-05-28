@@ -1,9 +1,9 @@
-package com.compgt01.compgt01.controller;
+package com.compgt01.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.compgt01.compgt01.model.MalhaModel;
+import com.compgt01.model.MalhaModel;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
