@@ -34,7 +34,7 @@ public class ControlMalhaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        this.setMalhaModel(new MalhaModel(10, 10));
+        this.setMalhaModel(new MalhaModel(3, 3));
         controleController.setMalhaController(malhaController);
         controleController.setMalhaModel(getMalha());
         malhaController.setMalhaModel(getMalha());

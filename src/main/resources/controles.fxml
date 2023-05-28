@@ -29,9 +29,9 @@
                     <content>
                         <VBox>
                             <Label text="x" />
-                            <Slider fx:id="addcolumnx" min="1" max="12" value="10"/>
+                            <Slider fx:id="addcolumnx" min="1" max="12" value="3"/>
                             <Label text="y" />
-                            <Slider fx:id="addrowy" min="1" max="12" value="10" />
+                            <Slider fx:id="addrowy" min="1" max="12" value="3" />
                         </VBox>
                     </content>
                 </TitledPane>

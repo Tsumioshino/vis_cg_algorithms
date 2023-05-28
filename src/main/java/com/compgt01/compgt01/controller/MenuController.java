@@ -96,27 +96,26 @@ public class MenuController {
                 if (getMalhaModel().getX() >= nv) {
                     return;
                 }
-                // ajusta model
-                getMalhaModel().setX(nv);
+                getMalhaController().addColumnX(ov, nv);
 
-                getMalhaController().reajusteMatrizBase(nv, 0);
-                getMalhaController().reajusteTP(getMalhaController().getTilepane(), ov, nv);
-
-                getMalhaController().getTilepane().setPrefColumns(nv);
-
-                getMalhaController().criarTileGambiarra(ov, nv);
             } else if (nv < ov) {
-                getMalhaModel().setX(nv);
-                getMalhaController().reajusteMatrizBase2(nv, 0);
+                getMalhaController().removeColumnX(ov, nv);
 
-                for (int i = ov - 1; i >= 0; i--) {
-                    for (int j = ov - 1; j > nv - 1; j--) {
-                        getMalhaModel().getTilePane().remove(
-                                getMalhaController().getAbsoluteTilePosition(j, i));
-                        getMalhaModel().getCoordinates().get(i).remove(j);
+            }
+        });
 
-                    }
+        addrowy.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Integer ov = oldValue.intValue();
+            Integer nv = newValue.intValue();
+            if (nv > ov) {
+                if (getMalhaModel().getX() >= nv) {
+                    return;
                 }
+                getMalhaController().addRowY(ov, nv);
+
+            } else if (nv < ov) {
+                getMalhaController().removeRowY(ov, nv);
+
             }
         });
 
