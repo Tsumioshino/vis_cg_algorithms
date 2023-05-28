@@ -108,7 +108,7 @@ public class MenuController {
             Integer ov = oldValue.intValue();
             Integer nv = newValue.intValue();
             if (nv > ov) {
-                if (getMalhaModel().getX() >= nv) {
+                if (getMalhaModel().getY() >= nv) {
                     return;
                 }
                 getMalhaController().addRowY(ov, nv);
