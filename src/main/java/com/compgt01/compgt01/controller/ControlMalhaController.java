@@ -33,14 +33,21 @@ public class ControlMalhaController implements Initializable {
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        creation(3, 3);
+    }
 
-        this.setMalhaModel(new MalhaModel(3, 3));
+    public void clear() {
+        malha.getChildren().clear();
+    }
+
+    public void creation(int x, int y) {
+        this.setMalhaModel(new MalhaModel(x, y));
+        controleController.setControlMalhaController(this);
         controleController.setMalhaController(malhaController);
         controleController.setMalhaModel(getMalha());
         malhaController.setMalhaModel(getMalha());
         malhaController.initializeBase();
-        malhaController.tudoReferenteAosBlocos();
-        malha.getChildren().add(malhaController.tudoReferenteAosBlocos());
+        malha.getChildren().add(malhaController.initializeMalha());
         controleController.initializeListeners();
     }
 }

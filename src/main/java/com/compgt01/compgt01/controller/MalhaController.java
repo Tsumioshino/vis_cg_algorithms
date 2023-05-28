@@ -33,10 +33,6 @@ public class MalhaController {
         return tilepane;
     }
 
-    private int defaultx = 3;
-
-    private int defaulty = 3;
-
     private MalhaModel malhaModel;
 
     public MalhaModel getMalhaModel() {
@@ -44,9 +40,7 @@ public class MalhaController {
     }
 
     public void setMalhaModel(MalhaModel malhaModel) {
-        if (this.malhaModel == null) {
-            this.malhaModel = malhaModel;
-        }
+        this.malhaModel = malhaModel;
     }
 
     static int[] calculate(String coordenada) {
@@ -62,17 +56,52 @@ public class MalhaController {
     }
 
     public void initializeBase() {
-        for (int i = 0; i < defaultx; i++) {
-            ArrayList<Integer> myList = new ArrayList<>(Arrays.asList(new Integer[defaultx]));
-            Collections.fill(myList, 0);
-            getMalhaModel().getMatrixpixel().add(myList);
-            ArrayList<CheckBox> myList2 = new ArrayList<>(defaulty);
+        int x = getMalhaModel().getX();
+        int y = getMalhaModel().getY();
+        System.out.println(" x y " + x + y);
+        for (int i = -x; i <= x; i++) {
+            ArrayList<Integer> listpixelback = new ArrayList<>(Arrays.asList(new Integer[x * 2 + 1]));
+            Collections.fill(listpixelback, 0);
+            getMalhaModel().getMatrixpixel().add(listpixelback);
 
-            for (int j = 0; j < defaulty; j++) {
-                myList2.add(createTile(j, i, false));
+            ArrayList<CheckBox> listpixelfront = new ArrayList<>(y * 2 + 1);
+            for (int j = -y; j <= y; j++) {
+                listpixelfront.add(createTile(j, i, false));
             }
-            getMalhaModel().getCoordinates().add(myList2);
+            getMalhaModel().getCoordinates().add(listpixelfront);
         }
+    }
+
+    public HBox initializeMalha() {
+        // cria a malha
+        TilePane tilePane = new TilePane();
+        tilePane.setId("basePontos");
+
+        tilePane.setPrefColumns(getMalhaModel().getX() * 2 + 1);
+        tilePane.setPrefRows(getMalhaModel().getY() * 2 + 1);
+
+        for (int i = getMalhaModel().getX(); i >= -getMalhaModel().getX(); i--) {
+            for (int j = -getMalhaModel().getY(); j <= getMalhaModel().getY(); j++) {
+                CheckBox tile = createTile(j, i, true);
+                tilePane.getChildren().add(tile);
+            }
+        }
+
+        this.makeAnythingDraggable(tilePane);
+
+        setTilepane(tilePane);
+
+        HBox container1 = new HBox();
+        container1.getChildren().add(tilePane);
+
+        container1.setFillHeight(false);
+
+        SubScene sub1 = new SubScene(container1, 10000, 10000);
+
+        HBox scenecontainer = new HBox();
+        scenecontainer.getChildren().add(sub1);
+
+        return scenecontainer;
     }
 
     private double startX;
@@ -97,14 +126,18 @@ public class MalhaController {
 
         tile.getStyleClass().add("selectedCheckBox");
 
-        // tile.setSelected(getMalhaModel().getMatrixpixel().get(y).get(x) == 1);
+        tile.setSelected(getMalhaModel().getMatrixpixel()
+                .get(y + getMalhaModel().getY())
+                .get(x + getMalhaModel().getX()) == 1);
         tile.selectedProperty().addListener((observable, oldValue, newValue) -> {
             int[] coord = calculate(tile.getId());
-            getMalhaModel().getMatrixpixel().get(coord[0]).set(coord[1], newValue ? 1 : 0);
+            getMalhaModel().getMatrixpixel()
+                    .get(coord[0] + getMalhaModel().getY())
+                    .set(coord[1] + getMalhaModel().getX(), newValue ? 1 : 0);
         });
 
         if (n) {
-            getMalhaModel().getCoordinates().get(y).add(x, tile);
+            getMalhaModel().getCoordinates().get(y + getMalhaModel().getY()).add(x + getMalhaModel().getX(), tile);
         }
         return tile;
     }
@@ -161,44 +194,9 @@ public class MalhaController {
         }
     }
 
-    public HBox tudoReferenteAosBlocos() {
-        // cria a malha
-        TilePane tilePane = new TilePane();
-
-        tilePane.setId("basePontos");
-
-        for (int i = defaultx - 1; i >= 0; i--) {
-            for (int j = 0; j < defaulty; j++) {
-                CheckBox tile = createTile(j, i, true);
-                tile.setId(String.format("(%d, %d)", j, i));
-                tilePane.getChildren().add(tile);
-            }
-        }
-        this.makeAnythingDraggable(tilePane);
-
-        tilePane.setPrefColumns(defaultx);
-        tilePane.setPrefRows(defaulty);
-
-        setTilepane(tilePane);
-
-        HBox rand1 = new HBox();
-
-        rand1.getChildren().add(tilePane);
-
-        SubScene sub1 = new SubScene(rand1, 1000, 1000);
-
-        HBox rand = new HBox();
-
-        rand.getChildren().add(sub1);
-
-        tilepane = tilePane;
-
-        return rand;
-    }
-
     public void criarTileGambiarra(int ov, int nv) {
 
-        for (int i = getMalhaModel().getMatrixpixel().size() - 1; i >= 0; i--) {
+        for (int i = getMalhaModel().getX() - 1; i >= -getMalhaModel().getX(); i--) {
             for (int j = ov; j < nv; j++) {
                 CheckBox tile2 = createTile(j, i, true);
                 tile2.setId(String.format("(%d, %d)", j, i));
@@ -214,7 +212,7 @@ public class MalhaController {
     public void criarTileGambiarra2(int ov, int nv) {
 
         for (int i = ov; i < nv; i++) {
-            for (int j = 0; j < getMalhaModel().getMatrixpixel().get(0).size(); j++) {
+            for (int j = -getMalhaModel().getY(); j <= getMalhaModel().getY(); j++) {
                 CheckBox tile2 = createTile(j, i, true);
                 tile2.setId(String.format("(%d, %d)", j, i));
 
@@ -228,16 +226,10 @@ public class MalhaController {
 
     public void addColumnX(int ov, int nv) {
         getMalhaModel().setX(nv);
-        getTilepane().setPrefColumns(nv);
-
-        System.out.println(getTilepane().getChildren());
-        System.out.println(getMalhaModel().getMatrixpixel());
+        getTilepane().setPrefColumns(nv * 2 + 1);
 
         reajusteMatrizBase(nv, 0);
         reajusteTP(getTilepane(), ov, nv);
-
-        System.out.println(getTilepane().getChildren());
-        System.out.println(getMalhaModel().getMatrixpixel());
 
         criarTileGambiarra(ov, nv);
     }
@@ -249,17 +241,10 @@ public class MalhaController {
 
         for (int i = 0; i < getMalhaModel().getMatrixpixel().size(); i++) {
             for (int j = ov - 1; j > nv - 1; j--) {
-                System.out.println(getAbsoluteTilePosition2(j, i));
-                System.out.println(getTilepane());
-
                 getTilepane().getChildren().remove(
                         getAbsoluteTilePosition2(j, i));
                 getMalhaModel().getCoordinates().get(i).remove(j);
                 getMalhaModel().getMatrixpixel().get(i).remove(j);
-
-                System.out.println(getTilepane().getChildren());
-                System.out.println(getMalhaModel().getMatrixpixel());
-
             }
         }
     }
@@ -285,18 +270,17 @@ public class MalhaController {
             }
             getMalhaModel().getCoordinates().remove(i);
             getMalhaModel().getMatrixpixel().remove(i);
-            System.out.println(getTilepane().getChildren());
-            System.out.println(getMalhaModel().getMatrixpixel());
         }
     }
 
     public void reajusteMatrizBase(int x, int y) {
         if (x > 0) {
             int basej = getMalhaModel().getMatrixpixel().get(0).size();
-            for (int i = 0; i < getMalhaModel().getMatrixpixel().size(); i++) {
+            for (int i = -getMalhaModel().getX(); i <= getMalhaModel().getX(); i++) {
                 for (int j = basej; j < x; j++) { // a | b | c | [adiciona no fim 3 0 caso tenha aumentado 3]
-                    getMalhaModel().getCoordinates().get(i).add(j, createTile(j, i, false));
-                    getMalhaModel().getMatrixpixel().get(i).add(j, 0);
+                    getMalhaModel().getCoordinates().get(i + getMalhaModel().getX()).add(j + getMalhaModel()
+                            .getY(), createTile(j, i, false));
+                    getMalhaModel().getMatrixpixel().get(i + getMalhaModel().getX()).add(j + getMalhaModel().getY(), 0);
                 }
             }
         }
@@ -321,7 +305,5 @@ public class MalhaController {
 
             }
         }
-        System.out.println(getMalhaModel().getCoordinates() + "\n\n\n");
     }
-
 }

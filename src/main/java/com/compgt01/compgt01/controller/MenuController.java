@@ -46,7 +46,27 @@ public class MenuController {
     private Slider zoom;
 
     @FXML
+    private TextField newx;
+
+    @FXML
+    private TextField newy;
+
+    @FXML
+    private Button destroy;
+
+    @FXML
     private MalhaController malhaController;
+
+    @FXML
+    private ControlMalhaController controlMalhaController;
+
+    public ControlMalhaController getControlMalhaController() {
+        return controlMalhaController;
+    }
+
+    public void setControlMalhaController(ControlMalhaController controlMalhaController) {
+        this.controlMalhaController = controlMalhaController;
+    }
 
     private MalhaModel malhaModel;
 
@@ -55,9 +75,7 @@ public class MenuController {
     }
 
     public void setMalhaModel(MalhaModel malhaModel) {
-        if (this.malhaModel == null) {
-            this.malhaModel = malhaModel;
-        }
+        this.malhaModel = malhaModel;
     }
 
     public MalhaController getMalhaController() {
@@ -141,8 +159,8 @@ public class MenuController {
             Integer x1 = Integer.valueOf(textx.getText().strip());
             Integer y1 = Integer.valueOf(texty.getText().strip());
             malhaController.getMalhaModel().getCoordinates()
-                    .get((y1 + getMalhaModel().getY() / 2) - 1)
-                    .get((x1 + getMalhaModel().getX() / 2) - 1)
+                    .get(y1 + getMalhaModel().getY())
+                    .get(x1 + getMalhaModel().getX())
                     .setSelected(true);
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -169,6 +187,34 @@ public class MenuController {
     public void onClear() {
         malhaController.getMalhaModel().getCoordinates().forEach(
                 row -> row.forEach(value -> value.setSelected(false)));
+    }
+
+    @FXML
+    public void onDestruction() {
+        try {
+            Integer x1 = Integer.valueOf(newx.getText().strip());
+            Integer y1 = Integer.valueOf(newy.getText().strip());
+            getControlMalhaController().clear();
+            getControlMalhaController().creation(x1, y1);
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Invalid Input1");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter valid integer values for x and y.");
+            alert.showAndWait();
+        } catch (NullPointerException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Invalid Input2");
+            alert.setHeaderText(null);
+            alert.setContentText("Erro no backend" + e.toString());
+            alert.showAndWait();
+        } catch (IndexOutOfBoundsException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Invalid Input3");
+            alert.setHeaderText(null);
+            alert.setContentText("Malha pequena demais" + e.toString());
+            alert.showAndWait();
+        }
     }
 
 }
