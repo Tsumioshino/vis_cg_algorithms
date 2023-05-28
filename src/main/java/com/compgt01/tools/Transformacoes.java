@@ -39,10 +39,6 @@ public class Transformacoes {
 
     }
 
-    public static void main(String[] args) {
-        bresenham(0, 0, 3, 5);
-    }
-
     public static void bresenham(MenuController menuController,
             MalhaController malhaController,
             int x1, int y1, int x2, int y2) {
@@ -50,7 +46,7 @@ public class Transformacoes {
         int dx, dy, incE, incNE, d, x, y;
         // Onde inverte a linha x1 > x2
         if (x1 > x2) {
-            bresenham(x2, y2, x1, y1);
+            bresenham(menuController, malhaController, x2, y2, x1, y1);
             return;
         }
         dx = x2 - x1;

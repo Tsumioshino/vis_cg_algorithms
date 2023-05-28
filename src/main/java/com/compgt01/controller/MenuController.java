@@ -233,11 +233,11 @@ public class MenuController {
     @FXML
     public void onSubmit() {
         try {
-            Integer x1 = Integer.valueOf(textx.getText().strip());
-            Integer y1 = Integer.valueOf(texty.getText().strip());
+            Integer x01 = Integer.valueOf(textx.getText().strip());
+            Integer y01 = Integer.valueOf(texty.getText().strip());
             malhaController.getMalhaModel().getCoordinates()
-                    .get(y1 + getMalhaModel().getY())
-                    .get(x1 + getMalhaModel().getX())
+                    .get(y01 + getMalhaModel().getY())
+                    .get(x01 + getMalhaModel().getX())
                     .setSelected(true);
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -269,10 +269,10 @@ public class MenuController {
     @FXML
     public void onDestruction() {
         try {
-            Integer x1 = Integer.valueOf(newx.getText().strip());
-            Integer y1 = Integer.valueOf(newy.getText().strip());
+            Integer x01 = Integer.valueOf(newx.getText().strip());
+            Integer y01 = Integer.valueOf(newy.getText().strip());
             getControlMalhaController().clear();
-            getControlMalhaController().creation(x1, y1);
+            getControlMalhaController().creation(x01, y01);
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Invalid Input1");
