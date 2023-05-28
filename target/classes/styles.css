@@ -1,0 +1,48 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 8 de abr. de 2023, 10:33:38
+    Author     : mmo
+*/
+
+#root > * {
+     -fx-spacing: 0;
+ }
+ 
+#basePontos > * {
+    -fx-spacing: 0;
+}
+.check-box > .box > .mark {
+    -fx-pref-width: 20px;
+    -fx-pref-height: 20px;
+}
+
+.selectedCheckBox:determinate .box {
+    -fx-background-color: gray;
+}
+
+.selectedCheckBox:selected .box {
+    -fx-background-color: red;
+}
+
+.selectedCheckBox:selected .mark {
+    -fx-opacity: 0;
+}
+
+.selectedCutBox:determinate .box {
+    -fx-background-color: cyan;
+}
+
+.selectedCutBox:selected .box {
+    -fx-background-color: green;
+}
+
+.selectedCutBox:selected .mark {
+    -fx-opacity: 0;
+}
+
+/*#menuV {
+    -fx-background-color: gray;
+}*/
