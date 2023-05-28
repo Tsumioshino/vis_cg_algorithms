@@ -101,6 +101,7 @@ public class MenuController {
     ObservableList<String> algorithms = FXCollections.observableArrayList(
             "Bresenham",
             "Círculo",
+            "Curva",
             "Polilinha",
             "Preenchimento Recursivo",
             "Varredura",
@@ -134,6 +135,9 @@ public class MenuController {
                             .strip()), Integer.valueOf(
                                     x1.getText().strip()),
                             Integer.valueOf(y1.getText().strip()));
+                    break;
+                case "Curva":
+                    Transformacoes.desenharCurvaBasier(this, malhaController);
                     break;
                 // case ("Polilinha"):
                 // Integer x1 = Integer.valueOf(textx.getText().strip());
