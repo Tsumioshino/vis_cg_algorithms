@@ -1,6 +1,10 @@
 package com.compgt01.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.compgt01.model.MalhaModel;
+import com.compgt01.model.PontoBasier;
 import com.compgt01.tools.Transformacoes;
 
 import javafx.collections.FXCollections;
@@ -32,6 +36,9 @@ public class MenuController {
     private TextField x2;
     @FXML
     private TextField y2;
+
+    @FXML
+    private TextField inputBasier;
 
     @FXML
     private TextField textx;
@@ -101,6 +108,7 @@ public class MenuController {
     ObservableList<String> algorithms = FXCollections.observableArrayList(
             "Bresenham",
             "Círculo",
+            "Curva",
             "Polilinha",
             "Preenchimento Recursivo",
             "Varredura",
@@ -134,6 +142,16 @@ public class MenuController {
                             .strip()), Integer.valueOf(
                                     x1.getText().strip()),
                             Integer.valueOf(y1.getText().strip()));
+                    break;
+                case "Curva":
+                    Set<PontoBasier> pontosControle = new HashSet<>(0);
+                    for (String pontoCo : inputBasier.getText().split(";")) {
+                        String ponto[] = pontoCo.split(",");
+                        pontosControle.add(new PontoBasier(Integer.parseInt(ponto[0]), Integer.parseInt(ponto[1]),
+                                pontosControle.size()));
+                    }
+
+                    Transformacoes.desenharCurvaBasier(this, malhaController, pontosControle);
                     break;
                 // case ("Polilinha"):
                 // Integer x1 = Integer.valueOf(textx.getText().strip());

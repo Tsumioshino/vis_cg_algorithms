@@ -6,6 +6,7 @@ import java.util.Set;
 import com.compgt01.controller.MalhaController;
 import com.compgt01.controller.MenuController;
 import com.compgt01.model.Ponto;
+import com.compgt01.model.PontoBasier;
 
 public class Transformacoes {
 
@@ -161,5 +162,78 @@ public class Transformacoes {
         pontos.add(new Ponto(centerX - y, centerY + x));
         pontos.add(new Ponto(centerX + y, centerY - x));
         pontos.add(new Ponto(centerX - y, centerY - x));
+    }
+
+    /**
+     * Basier Init
+     * @param tInicio
+     * @param tFim
+     * @param incremento
+     * @param pontosControle
+     * @return
+     */
+
+    public static void desenharCurvaBasier(MenuController menuController, MalhaController malhaController,
+            Set<PontoBasier> pontosControle) {
+
+        // Calcular pontos na curva de Bezier
+        double tInicio = 0;
+        double tFim = 1;
+        double incremento = 0.01;
+        Set<PontoBasier> pontosBezier = calcularPontosBezier(tInicio, tFim, incremento, pontosControle);
+
+        pontosBezier.forEach(e -> {
+
+            try {
+                malhaController.getMalhaModel().getCoordinates()
+                        .get(e.getY() + menuController.getMalhaModel().getY())
+                        .get(e.getX() + menuController.getMalhaModel().getX())
+                        .setSelected(true);
+            } catch (IndexOutOfBoundsException exception) {
+                System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
+            }
+
+        });
+
+    }
+
+
+    private static Set<PontoBasier> calcularPontosBezier(double tInicio, double tFim, double incremento,
+            Set<PontoBasier> pontosControle) {
+        Set<PontoBasier> pontosBezier = new HashSet<>();
+
+        for (double t = tInicio; t <= tFim; t += incremento) {
+            PontoBasier pontoBezier = calcularPontoBezier(t, pontosControle);
+            pontosBezier.add(pontoBezier);
+        }
+
+        return pontosBezier;
+    }
+
+    private static PontoBasier calcularPontoBezier(double t, Set<PontoBasier> pontosControle) {
+        int n = pontosControle.size() - 1;
+
+        double x = 0;
+        double y = 0;
+
+        for (PontoBasier pontoControle : pontosControle) {
+            double coeficiente = calcularCoeficienteBinomial(n, pontoControle.getIndice(), t);
+            x += coeficiente * pontoControle.getX();
+            y += coeficiente * pontoControle.getY();
+        }
+
+        return new PontoBasier((int) x, (int) y, 0);
+    }
+
+    private static double calcularCoeficienteBinomial(int n, int k, double t) {
+        double coeficiente = 1;
+
+        for (int i = 1; i <= k; i++) {
+            coeficiente *= (n - i + 1) / (double) i;
+        }
+
+        coeficiente *= Math.pow(t, k) * Math.pow(1 - t, n - k);
+
+        return coeficiente;
     }
 }
