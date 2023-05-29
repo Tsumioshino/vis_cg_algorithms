@@ -173,14 +173,8 @@ public class Transformacoes {
      * @return
      */
 
-    public static void desenharCurvaBasier(MenuController menuController, MalhaController malhaController) {
-
-        // Pontos de controle da curva de Bezier
-        Set<PontoBasier> pontosControle = new HashSet<>();
-        pontosControle.add(new PontoBasier(0, 0, 0));
-        pontosControle.add(new PontoBasier(20, 20, 1));
-        pontosControle.add(new PontoBasier(30, 20, 2));
-        pontosControle.add(new PontoBasier(50, 0, 3));
+    public static void desenharCurvaBasier(MenuController menuController, MalhaController malhaController,
+            Set<PontoBasier> pontosControle) {
 
         // Calcular pontos na curva de Bezier
         double tInicio = 0;
