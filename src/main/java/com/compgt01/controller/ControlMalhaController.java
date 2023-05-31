@@ -7,6 +7,7 @@ import com.compgt01.model.MalhaModel;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 
@@ -19,6 +20,10 @@ public class ControlMalhaController implements Initializable {
     protected HBox malha;
     @FXML
     protected MalhaController malhaController;
+    @FXML
+    protected TextArea console;
+    @FXML
+    protected ConsoleController consoleController;
 
     private MalhaModel malhaModel;
 
@@ -33,7 +38,7 @@ public class ControlMalhaController implements Initializable {
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        creation(3, 3);
+        creation(10, 10);
     }
 
     public void clear() {
@@ -45,6 +50,8 @@ public class ControlMalhaController implements Initializable {
         controleController.setControlMalhaController(this);
         controleController.setMalhaController(malhaController);
         controleController.setMalhaModel(getMalha());
+        controleController.setConsoleController(consoleController);
+
         malhaController.setMalhaModel(getMalha());
         malhaController.initializeBase();
         malha.getChildren().add(malhaController.initializeMalha());

@@ -58,7 +58,6 @@ public class MalhaController {
     public void initializeBase() {
         int x = getMalhaModel().getX();
         int y = getMalhaModel().getY();
-        System.out.println(" x y " + x + y);
         for (int i = -x; i <= x; i++) {
             ArrayList<Integer> listpixelback = new ArrayList<>(Arrays.asList(new Integer[x * 2 + 1]));
             Collections.fill(listpixelback, 0);
@@ -87,8 +86,6 @@ public class MalhaController {
             }
         }
 
-        this.makeAnythingDraggable(tilePane);
-
         setTilepane(tilePane);
 
         HBox container1 = new HBox();
@@ -96,7 +93,9 @@ public class MalhaController {
 
         container1.setFillHeight(false);
 
-        SubScene sub1 = new SubScene(container1, 10000, 10000);
+        this.makeAnythingDraggable(container1);
+        // isso aqui tem tamanho fixo e isso pode ferrar certas coisas
+        SubScene sub1 = new SubScene(container1, 1000, 600);
 
         HBox scenecontainer = new HBox();
         scenecontainer.getChildren().add(sub1);

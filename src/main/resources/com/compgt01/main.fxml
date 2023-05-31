@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
 
 
 
-<HBox fx:id="root" 
+
+<BorderPane fx:id="root" 
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.compgt01.controller.ControlMalhaController">
-      <fx:include fx:id="controle" source="controles.fxml"/>
-      <fx:include fx:id="malha" source="malha.fxml"/>
-</HBox>
+      <left>
+            <fx:include fx:id="controle" source="controles.fxml"/>
+      </left>
+      <center>
+            <fx:include fx:id="malha" source="malha.fxml"/>
+      </center>
+      <bottom>
+           <fx:include fx:id="console" source="console.fxml"/>
+      </bottom>
+</BorderPane>

@@ -7,14 +7,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : mmo
 */
 
-#root > * {
-     -fx-spacing: 0;
- }
- 
-#basePontos > * {
+#root>* {
     -fx-spacing: 0;
 }
-.check-box > .box > .mark {
+
+#basePontos>* {
+    -fx-spacing: 0;
+}
+
+.check-box>.box>.mark {
     -fx-pref-width: 20px;
     -fx-pref-height: 20px;
 }
@@ -43,6 +44,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-opacity: 0;
 }
 
-/*#menuV {
-    -fx-background-color: gray;
-}*/
+.text-area {
+    -fx-font-family: Consolas;
+    -fx-font-size: 15;
+    -fx-text-fill: #ffffff;
+}
+
+.text-area .content {
+    -fx-background-color: #000000;
+    -fx-foreground-color: #000000;
+    -fx-opacity: 100;
+}

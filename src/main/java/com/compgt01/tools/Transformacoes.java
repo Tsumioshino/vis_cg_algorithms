@@ -3,6 +3,7 @@ package com.compgt01.tools;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.compgt01.controller.ConsoleController;
 import com.compgt01.controller.MalhaController;
 import com.compgt01.controller.MenuController;
 import com.compgt01.model.Ponto;
@@ -25,14 +26,6 @@ public class Transformacoes {
      * @param matriz
      * @return
      */
-    public static int[][] translacao(int[] pontos, int[][] matriz) {
-        for (int row = 0; row < matriz.length; row++) {
-            for (int col = 0; col < matriz[row].length; col++) {
-                matriz[row][col] = matriz[row][col] + pontos[col];
-            }
-        }
-        return matriz;
-    }
 
     public static void imprimirMatriz(int[][] matriz) {
         for (int row = 0; row < matriz.length; row++) {
@@ -115,7 +108,8 @@ public class Transformacoes {
         return pontos;
     }
 
-    public static void desenharCirculo(MenuController menuController, MalhaController malhaController, int raio,
+    public static void desenharCirculo(ConsoleController console, MenuController menuController,
+            MalhaController malhaController, int raio,
             int centerX, int centerY) {
 
         HashSet<Ponto> pontos = new HashSet<>(0);
@@ -128,7 +122,7 @@ public class Transformacoes {
                         .get(e.getX() + menuController.getMalhaModel().getX())
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
-                System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
+                console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
             }
 
         });
@@ -166,6 +160,7 @@ public class Transformacoes {
 
     /**
      * Basier Init
+     * 
      * @param tInicio
      * @param tFim
      * @param incremento
@@ -202,7 +197,6 @@ public class Transformacoes {
         });
 
     }
-
 
     private static Set<PontoBasier> calcularPontosBezier(double tInicio, double tFim, double incremento,
             Set<PontoBasier> pontosControle) {

@@ -3,6 +3,7 @@ package com.compgt01.controller;
 import com.compgt01.model.MalhaModel;
 import com.compgt01.tools.Transformacoes;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,10 +27,13 @@ public class MenuController {
 
     @FXML
     private TextField x1;
+
     @FXML
     private TextField y1;
+
     @FXML
     private TextField x2;
+
     @FXML
     private TextField y2;
 
@@ -65,6 +69,17 @@ public class MenuController {
 
     @FXML
     private Button destroy;
+
+    @FXML
+    private ConsoleController consoleController;
+
+    public ConsoleController getConsoleController() {
+        return consoleController;
+    }
+
+    public void setConsoleController(ConsoleController consoleController) {
+        this.consoleController = consoleController;
+    }
 
     @FXML
     private MalhaController malhaController;
@@ -126,13 +141,18 @@ public class MenuController {
                 case ("Bresenham"):
                     Integer x01 = Integer.valueOf(x1.getText().strip());
                     Integer y01 = Integer.valueOf(y1.getText().strip());
-                    Integer x02 = Integer.valueOf(x2.getText().strip());
+
+                    Integer x02 = Integer.valueOf(y2.getText().strip());
                     Integer y02 = Integer.valueOf(y2.getText().strip());
+
                     Transformacoes.bresenham(this, malhaController, x01, y01, x02, y02);
                     break;
                 case ("Círculo"):
-                    Transformacoes.desenharCirculo(this, malhaController, Integer.valueOf(x2.getText()
-                            .strip()), Integer.valueOf(
+                    consoleController.executeAlgorithm("Círculo");
+                    Transformacoes.desenharCirculo(consoleController, this, malhaController,
+                            Integer.valueOf(x2.getText()
+                                    .strip()),
+                            Integer.valueOf(
                                     x1.getText().strip()),
                             Integer.valueOf(y1.getText().strip()));
                     break;
