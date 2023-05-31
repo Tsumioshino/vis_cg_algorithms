@@ -148,7 +148,11 @@ public class MenuController {
                     Transformacoes.bresenham(this, malhaController, x01, y01, x02, y02);
                     break;
                 case ("Círculo"):
-                    consoleController.executeAlgorithm("Círculo");
+                    consoleController.executeAlgorithm(
+                            String.format("Círculo %s %s %s",
+                                    x2.getText().strip(),
+                                    x1.getText().strip(),
+                                    y1.getText().strip()));
                     Transformacoes.desenharCirculo(consoleController, this, malhaController,
                             Integer.valueOf(x2.getText()
                                     .strip()),
