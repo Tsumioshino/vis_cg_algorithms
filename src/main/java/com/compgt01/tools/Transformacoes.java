@@ -65,9 +65,7 @@ public class Transformacoes {
         pontos.forEach(e -> {
             try {
                 System.out.println(e);
-                malhaController.getMalhaModel().getCoordinates()
-                        .get(e.getY() + menuController.getMalhaModel().getY())
-                        .get(e.getX() + menuController.getMalhaModel().getX())
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX() + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
@@ -123,9 +121,7 @@ public class Transformacoes {
         pontos.forEach(e -> {
 
             try {
-                malhaController.getMalhaModel().getCoordinates()
-                        .get(e.getY() + menuController.getMalhaModel().getY())
-                        .get(e.getX() + menuController.getMalhaModel().getX())
+                malhaController.getMalhaModel().getGridCheckBox()[menuController.getMalhaModel().getY() - e.getY()][e.getX() + menuController.getMalhaModel().getX()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
@@ -185,9 +181,7 @@ public class Transformacoes {
         pontosBezier.forEach(e -> {
 
             try {
-                malhaController.getMalhaModel().getCoordinates()
-                        .get(e.getY() + menuController.getMalhaModel().getY())
-                        .get(e.getX() + menuController.getMalhaModel().getX())
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX() + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));

@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Compgt01 extends Application {
@@ -23,8 +22,6 @@ public class Compgt01 extends Application {
         Scene scene = new Scene(box);
         String csslink = getClass().getResource("styles.css").toExternalForm();
         scene.getStylesheets().add(csslink);
-
-        scene.setFill(Color.web("#ccffcc"));
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
