@@ -11,6 +11,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-spacing: 0;
 }
 
+#basePontos {
+    -fx-padding: 10 10 10 10;
+
+}
+
 #basePontos>* {
     -fx-spacing: 0;
 }
@@ -52,6 +57,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 .text-area .content {
     -fx-background-color: #000000;
-    -fx-foreground-color: #000000;
-    -fx-opacity: 100;
+    -fx-background-radius: 20;
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 20;
+    -fx-padding: 10px;
+    -fx-pref-height: 200px;
+    /* Adjust the preferred height as needed */
+    -fx-pref-width: 300px;
+    /* Adjust the preferred width as needed */
 }

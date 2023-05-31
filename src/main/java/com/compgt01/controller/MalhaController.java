@@ -95,7 +95,7 @@ public class MalhaController {
 
         this.makeAnythingDraggable(container1);
         // isso aqui tem tamanho fixo e isso pode ferrar certas coisas
-        SubScene sub1 = new SubScene(container1, 1000, 600);
+        SubScene sub1 = new SubScene(container1, 580, 580);
 
         HBox scenecontainer = new HBox();
         scenecontainer.getChildren().add(sub1);
