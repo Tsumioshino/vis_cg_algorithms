@@ -7,7 +7,6 @@ import com.compgt01.model.MalhaModel;
 import com.compgt01.model.PontoBasier;
 import com.compgt01.tools.Transformacoes;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +17,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Scale;
 
 /**
@@ -64,9 +64,6 @@ public class MenuController {
 
     @FXML
     private Slider addrowy;
-
-    @FXML
-    private Slider zoom;
 
     @FXML
     private TextField newx;
@@ -167,7 +164,7 @@ public class MenuController {
                                     x1.getText().strip()),
                             Integer.valueOf(y1.getText().strip()));
                     break;
-                case "Curva":
+                case ("Curva"):
                     Set<PontoBasier> pontosControle = new HashSet<>(0);
                     for (String pontoCo : inputBasier.getText().split(";")) {
                         String ponto[] = pontoCo.split(",");
@@ -227,47 +224,12 @@ public class MenuController {
             }
         });
 
-        // addcolumnx.valueProperty().addListener((observable, oldValue, newValue) -> {
-        // Integer ov = oldValue.intValue();
-        // Integer nv = newValue.intValue();
-        // if (nv > ov) {
-        // if (getMalhaModel().getX() >= nv) {
-        // return;
-        // }
-        // getMalhaController().addColumnX(ov, nv);
-
-        // } else if (nv < ov) {
-        // getMalhaController().removeColumnX(ov, nv);
-
-        // }
-        // });
-
-        // addrowy.valueProperty().addListener((observable, oldValue, newValue) -> {
-        // Integer ov = oldValue.intValue();
-        // Integer nv = newValue.intValue();
-        // if (nv > ov) {
-        // if (getMalhaModel().getY() >= nv) {
-        // return;
-        // }
-        // getMalhaController().addRowY(ov, nv);
-
-        // } else if (nv < ov) {
-        // getMalhaController().removeRowY(ov, nv);
-
-        // }
-        // });
-
-        zoom.valueProperty().addListener((observable, oldValue, newValue) ->
-
-        {
-            Double ov = oldValue.doubleValue();
-            Double nv = newValue.doubleValue();
-            if (nv > ov) {
-                getMalhaController().getTilepane().getTransforms().add(new Scale(1.25, 1.25,
-                        0, 0));
-            } else if (nv < ov) {
-                getMalhaController().getTilepane().getTransforms().add(new Scale(0.75, 0.75,
-                        0, 0));
+        getMalhaController().getGridPane().setOnScroll((ScrollEvent event) -> {
+            if (event.getDeltaY() != 0) {
+                double zoomFactor = event.getDeltaY() > 0 ? 1.25 : 0.75;
+                getMalhaController().getGridPane().getTransforms()
+                        .add(new Scale(zoomFactor, zoomFactor, event.getX(), event.getY()));
+                event.consume();
             }
         });
 

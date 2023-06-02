@@ -61,8 +61,4 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-border-color: #CCCCCC;
     -fx-border-radius: 20;
     -fx-padding: 10px;
-    -fx-pref-height: 200px;
-    /* Adjust the preferred height as needed */
-    -fx-pref-width: 300px;
-    /* Adjust the preferred width as needed */
 }
