@@ -53,7 +53,7 @@ public class ControlMalhaController implements Initializable {
         controleController.setConsoleController(consoleController);
 
         malhaController.setMalhaModel(getMalha());
-        malhaController.initializeBase();
+        malhaController.initializeMalha();
         malha.getChildren().add(malhaController.initializeMalha());
         controleController.initializeListeners();
     }

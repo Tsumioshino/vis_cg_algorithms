@@ -58,9 +58,7 @@ public class Transformacoes {
         pontos.forEach(e -> {
             try {
                 System.out.println(e);
-                malhaController.getMalhaModel().getCoordinates()
-                        .get(e.getY() + menuController.getMalhaModel().getY())
-                        .get(e.getX() + menuController.getMalhaModel().getX())
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX() + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
@@ -117,9 +115,7 @@ public class Transformacoes {
         pontos.forEach(e -> {
 
             try {
-                malhaController.getMalhaModel().getCoordinates()
-                        .get(e.getY() + menuController.getMalhaModel().getY())
-                        .get(e.getX() + menuController.getMalhaModel().getX())
+                malhaController.getMalhaModel().getGridCheckBox()[menuController.getMalhaModel().getY() - e.getY()][e.getX() + menuController.getMalhaModel().getX()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
@@ -168,14 +164,8 @@ public class Transformacoes {
      * @return
      */
 
-    public static void desenharCurvaBasier(MenuController menuController, MalhaController malhaController) {
-
-        // Pontos de controle da curva de Bezier
-        Set<PontoBasier> pontosControle = new HashSet<>();
-        pontosControle.add(new PontoBasier(0, 0, 0));
-        pontosControle.add(new PontoBasier(20, 20, 1));
-        pontosControle.add(new PontoBasier(30, 20, 2));
-        pontosControle.add(new PontoBasier(50, 0, 3));
+    public static void desenharCurvaBasier(MenuController menuController, MalhaController malhaController,
+            Set<PontoBasier> pontosControle) {
 
         // Calcular pontos na curva de Bezier
         double tInicio = 0;
@@ -186,9 +176,7 @@ public class Transformacoes {
         pontosBezier.forEach(e -> {
 
             try {
-                malhaController.getMalhaModel().getCoordinates()
-                        .get(e.getY() + menuController.getMalhaModel().getY())
-                        .get(e.getX() + menuController.getMalhaModel().getX())
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX() + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));

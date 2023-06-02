@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.BorderPane?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
 
-
-
-<BorderPane fx:id="root" 
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.compgt01.controller.ControlMalhaController">
-      <left>
-            <fx:include fx:id="controle" source="controles.fxml"/>
-      </left>
-      <center>
-            <fx:include fx:id="malha" source="malha.fxml"/>
-      </center>
-      <bottom>
-           <fx:include fx:id="console" source="console.fxml"/>
-      </bottom>
-</BorderPane>
+<HBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1" fx:controller="com.compgt01.controller.ControlMalhaController">
+      <fx:include fx:id="controle" source="controles.fxml" />
+      <fx:include fx:id="malha" source="malha.fxml" />
+</HBox>
