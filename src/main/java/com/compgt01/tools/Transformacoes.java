@@ -9,6 +9,8 @@ import com.compgt01.controller.MenuController;
 import com.compgt01.model.Ponto;
 import com.compgt01.model.PontoBasier;
 
+import javafx.scene.control.CheckBox;
+
 public class Transformacoes {
 
     /**
@@ -69,6 +71,65 @@ public class Transformacoes {
 
         });
 
+    }
+
+    public static void translacao(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
+            int x1, int y1) {
+
+        System.out.println(String.format("%d %d", x1, y1));
+
+        CheckBox[][] gridCheckBox = malhaController.getMalhaModel().getGridCheckBox();
+        CheckBox[][] gridCheckBoxCopy = new CheckBox[gridCheckBox.length][];
+
+        for (int i = 0; i < gridCheckBox.length; i++) {
+            gridCheckBoxCopy[i] = new CheckBox[gridCheckBox[i].length];
+            for (int j = 0; j < gridCheckBox[i].length; j++) {
+                CheckBox originalCheckBox = gridCheckBox[i][j];
+                CheckBox copiedCheckBox = new CheckBox();
+                copiedCheckBox.setSelected(originalCheckBox.isSelected());
+                // Copy other properties as needed
+                gridCheckBoxCopy[i][j] = copiedCheckBox;
+            }
+        }
+        if (x1 >= 0 && y1 >= 0) {
+            for (int i = (menuController.getMalhaModel().getX() * 2 + 1) - 1; i >= 0; i--) {
+                for (int j = (menuController.getMalhaModel().getY() * 2 + 1) - 1; j >= 0; j--) {
+                    CheckBox checkbox = gridCheckBoxCopy[i][j];
+                    if (checkbox.isSelected()) {
+                        try {
+                            System.out.println(String.format("%d %d", i + x1, i + y1));
+                            gridCheckBox[i][j].setSelected(false);
+                            gridCheckBox[i + x1][j - y1].setSelected(true);
+                        } catch (IndexOutOfBoundsException exception) {
+                            console.redirectToConsole(
+                                    String.format("x: %d y: %d fora da camada", i - menuController.getMalhaModel()
+                                            .getX() + x1, j - menuController.getMalhaModel().getY() - y1, "\n"));
+
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i <= (menuController.getMalhaModel().getX() * 2 + 1) - 1; i++) {
+                for (int j = 0; j <= (menuController.getMalhaModel().getY() * 2 + 1) - 1; j++) {
+                    CheckBox checkbox = gridCheckBoxCopy[i][j];
+                    if (checkbox.isSelected()) {
+                        try {
+                            System.out.println(String.format("%d %d", i + x1, i + y1));
+                            gridCheckBox[i][j].setSelected(false);
+                            gridCheckBox[i + x1][j - y1].setSelected(true);
+                        } catch (IndexOutOfBoundsException exception) {
+                            console.redirectToConsole(
+                                    String.format("x: %d y: %d fora da camada", i - menuController.getMalhaModel()
+                                            .getX() + x1, j - menuController.getMalhaModel().getY() - y1, "\n"));
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -190,7 +251,7 @@ public class Transformacoes {
             }
 
         });
-        
+
     }
 
     private static Set<PontoBasier> calcularPontosBezier(double tInicio, double tFim, double incremento,

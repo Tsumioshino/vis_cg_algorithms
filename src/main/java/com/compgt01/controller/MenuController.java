@@ -270,13 +270,13 @@ public class MenuController {
 
                     Set<PontoBasier> pontosControle = new HashSet<>(0);
 
-                    pontosControle.add(new PontoBasier(x1,y1,0));
+                    pontosControle.add(new PontoBasier(x1, y1, 0));
                     for (String pontoCo : pontoscontrole) {
                         String[] ponto = pontoCo.split(",");
                         pontosControle.add(new PontoBasier(
-                        Integer.parseInt(ponto[0]),
-                        Integer.parseInt(ponto[1]),
-                        pontosControle.size()));
+                                Integer.parseInt(ponto[0]),
+                                Integer.parseInt(ponto[1]),
+                                pontosControle.size()));
                     }
                     pontosControle.add(new PontoBasier(x2, y2, pontosControle.size()));
                     consoleController.executeAlgorithm(
@@ -320,6 +320,17 @@ public class MenuController {
                 TextField x001 = createTextField("x");
                 TextField y001 = createTextField("y");
                 Button b1 = new Button("Executar");
+
+                b1.setOnAction(e -> {
+                    pcc = 0;
+                    Integer x1 = Integer.valueOf(x001.getText().strip());
+                    Integer y1 = Integer.valueOf(y001.getText().strip());
+
+                    consoleController.executeAlgorithm(
+                            String.format("Translacao %d %d",
+                                    x1, y1));
+                    Transformacoes.translacao(consoleController, this, malhaController, x1, y1);
+                });
 
                 titledPane.setContent(new VBox(new HBox(x001, y001), b1));
                 break;
