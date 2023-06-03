@@ -1,10 +1,16 @@
 package com.compgt01.controller;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import com.compgt01.model.CheckBoxXY;
 import com.compgt01.model.MalhaModel;
+import com.compgt01.model.Ponto;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
@@ -19,6 +25,8 @@ public class MalhaController {
 
     @FXML
     private GridPane gridPane = new GridPane();
+
+    private List<Ponto> pontosClicados = new LinkedList<>();
 
     public void setGridPane(GridPane gridPane) {
         this.gridPane = gridPane;
@@ -63,7 +71,13 @@ public class MalhaController {
 
         for (int x = 0; x < (getMalhaModel().getX() * 2) + 1; x++) {
             for (int y = 0; y < (getMalhaModel().getY() * 2) + 1; y++) {
-                getMalhaModel().getGridCheckBox()[x][y] = createTile(x, y);
+                getMalhaModel().getGridCheckBox()[x][y] = createTile(x - getMalhaModel().getX(), getMalhaModel()
+                        .getY() - y);
+                getMalhaModel().getGridCheckBox()[x][y].addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
+                    CheckBoxXY checkBoxXY = (CheckBoxXY) event.getSource();
+                    pontosClicados.add(checkBoxXY.getPonto());
+                    System.out.println(checkBoxXY.getPonto());
+                });
                 gridpane.add(getMalhaModel().getGridCheckBox()[x][y], x, y);
             }
         }
@@ -95,13 +109,25 @@ public class MalhaController {
         });
     }
 
-    public CheckBox createTile(int x, int y) {
+    public CheckBoxXY createTile(int x, int y) {
 
-        CheckBox tile = new CheckBox();
+        CheckBoxXY tile = new CheckBoxXY(new Ponto(x, y));
         tile.setId(String.format("(%d, %d)", x, y));
 
         tile.getStyleClass().add("selectedCheckBox");
 
         return tile;
+    }
+
+    public List<Ponto> getPontosClicados() {
+        return pontosClicados;
+    }
+
+    public void setPontosClicados(List<Ponto> pontosClicados) {
+        this.pontosClicados = pontosClicados;
+    }
+
+    public Ponto getFistPonto() {
+        return this.pontosClicados.get(0);
     }
 }
