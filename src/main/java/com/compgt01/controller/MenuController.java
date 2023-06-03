@@ -203,35 +203,35 @@ public class MenuController {
             }
         });
 
-        addcolumnx.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Integer ov = oldValue.intValue();
-            Integer nv = newValue.intValue();
-            if (nv > ov) {
-                if (getMalhaModel().getX() >= nv) {
-                    return;
-                }
-                getMalhaController().addColumnX(ov, nv);
+        // addcolumnx.valueProperty().addListener((observable, oldValue, newValue) -> {
+        // Integer ov = oldValue.intValue();
+        // Integer nv = newValue.intValue();
+        // if (nv > ov) {
+        // if (getMalhaModel().getX() >= nv) {
+        // return;
+        // }
+        // getMalhaController().addColumnX(ov, nv);
 
-            } else if (nv < ov) {
-                getMalhaController().removeColumnX(ov, nv);
+        // } else if (nv < ov) {
+        // getMalhaController().removeColumnX(ov, nv);
 
-            }
-        });
+        // }
+        // });
 
-        addrowy.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Integer ov = oldValue.intValue();
-            Integer nv = newValue.intValue();
-            if (nv > ov) {
-                if (getMalhaModel().getY() >= nv) {
-                    return;
-                }
-                getMalhaController().addRowY(ov, nv);
+        // addrowy.valueProperty().addListener((observable, oldValue, newValue) -> {
+        // Integer ov = oldValue.intValue();
+        // Integer nv = newValue.intValue();
+        // if (nv > ov) {
+        // if (getMalhaModel().getY() >= nv) {
+        // return;
+        // }
+        // getMalhaController().addRowY(ov, nv);
 
-            } else if (nv < ov) {
-                getMalhaController().removeRowY(ov, nv);
+        // } else if (nv < ov) {
+        // getMalhaController().removeRowY(ov, nv);
 
-            }
-        });
+        // }
+        // });
 
         zoom.valueProperty().addListener((observable, oldValue, newValue) ->
 
@@ -254,10 +254,10 @@ public class MenuController {
         try {
             Integer x01 = Integer.valueOf(textx.getText().strip());
             Integer y01 = Integer.valueOf(texty.getText().strip());
-            malhaController.getMalhaModel().getCoordinates()
-                    .get(y01 + getMalhaModel().getY())
-                    .get(x01 + getMalhaModel().getX())
-                    .setSelected(true);
+            malhaController.getMalhaModel().getGridCheckBox()[x01 + getMalhaModel().getX()][getMalhaModel().getY()
+                    - y01]
+                    .setSelected(!malhaController.getMalhaModel().getGridCheckBox()[x01
+                            + getMalhaModel().getX()][getMalhaModel().getY() - y01].isSelected());
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Invalid Input1");
@@ -281,8 +281,11 @@ public class MenuController {
 
     @FXML
     public void onClear() {
-        malhaController.getMalhaModel().getCoordinates().forEach(
-                row -> row.forEach(value -> value.setSelected(false)));
+        for (int i = 0; i < (malhaController.getMalhaModel().getX() * 2) + 1; i++) {
+            for (int j = 0; j < (malhaController.getMalhaModel().getY() * 2) + 1; j++) {
+                malhaController.getMalhaModel().getGridCheckBox()[i][j].setSelected(false);
+            }
+        }
     }
 
     @FXML
