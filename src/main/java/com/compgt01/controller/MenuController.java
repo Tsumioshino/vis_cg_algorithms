@@ -159,8 +159,8 @@ public class MenuController {
                 List<Ponto> clicados = getMalhaController().getPontosClicados();
                 Button desenhar = new Button("Desenhar clicando");
                 desenhar.setOnAction(e -> {
-                    Transformacoes.bresenham(consoleController, this, malhaController, clicados.get(0),
-                            clicados.get(1));
+                    new Thread(() -> Transformacoes.bresenham(consoleController, this, malhaController, clicados.get(0),
+                            clicados.get(1))).start();
                     getMalhaController().getPontosClicados().clear();
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1, desenhar));
@@ -179,12 +179,12 @@ public class MenuController {
                                     raio.getText().strip(),
                                     x001.getText().strip(),
                                     y001.getText().strip()));
-                    Transformacoes.desenharCirculo(consoleController, this, malhaController,
+                    new Thread(() -> Transformacoes.desenharCirculo(consoleController, this, malhaController,
                             Integer.valueOf(raio.getText()
                                     .strip()),
                             Integer.valueOf(
                                     x001.getText().strip()),
-                            Integer.valueOf(y001.getText().strip()));
+                            Integer.valueOf(y001.getText().strip()))).start();
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(raio), b1));
                 break;
@@ -290,7 +290,8 @@ public class MenuController {
                     consoleController.executeAlgorithm(
                             String.format("CurvaBezier %d %d %d %d",
                                     x1, y1, x2, y2));
-                    Transformacoes.desenharCurvaBasier(consoleController, this, malhaController, pontosControle);
+                    new Thread(() -> Transformacoes.desenharCurvaBasier(consoleController, this, malhaController,
+                            pontosControle)).start();
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), insert, b1));
 
@@ -306,19 +307,26 @@ public class MenuController {
                 Button executarPolilinha = new Button("Desenhar");
 
                 executarPolilinha.setOnAction(event -> {
-                    List<Ponto> clicados = getMalhaController().getPontosClicados();
-                    for (int i = 0; i < clicados.size(); i++) {
-                        Ponto primeiro = clicados.get(i);
-                        if (i + 1 < clicados.size()) {
-                            Ponto segundo = clicados.get(i + 1);
-                            System.out.println("Par: " + primeiro + ", " + segundo);
-                            Transformacoes.bresenham(consoleController, this, malhaController, primeiro, segundo);
-                        } else {
-                            Transformacoes.bresenham(consoleController, this, malhaController, primeiro,
-                                    clicados.get(0));
-                        }
-                    }
-                    getMalhaController().getPontosClicados().clear();
+                    new Thread(
+                            () ->
+                            {
+                                List<Ponto> clicados = getMalhaController().getPontosClicados();
+                                for (int i = 0; i < clicados.size(); i++) {
+                                    Ponto primeiro = clicados.get(i);
+                                    if (i + 1 < clicados.size()) {
+                                        Ponto segundo = clicados.get(i + 1);
+                                        System.out.println("Par: " + primeiro + ", " + segundo);
+                                        Transformacoes.bresenham(consoleController, this, malhaController, primeiro,
+                                                segundo);
+                                    } else {
+                                        Transformacoes.bresenham(consoleController, this, malhaController, primeiro,
+                                                clicados.get(0));
+                                    }
+                                }
+                                getMalhaController().getPontosClicados().clear();
+                            }
+                    ).start();
+
                 });
 
                 titledPane.setContent(new VBox(new HBox(selecionarPontos), new HBox(executarPolilinha)));
@@ -331,14 +339,14 @@ public class MenuController {
                     getMalhaController().getPontosClicados().clear();
                 });
 
-                Button recursivo = new Button("Preenchimento Recursivo");
+                Button recursivo = new Button("Executar");
                 recursivo.setOnAction(e -> {
                     Ponto p = new Ponto(getMalhaController().getFistPonto().getX() + getMalhaModel().getX(),
-                            getMalhaController().getFistPonto().getY() + getMalhaModel().getY());
+                            getMalhaModel().getY() - getMalhaController().getFistPonto().getY());
 
                     malhaController.getMalhaModel().getGridCheckBox()[p.getX()][p.getY()]
                             .setSelected(false);
-                    Transformacoes.recursiveFill(consoleController, malhaModel, p);
+                    new Thread(() -> Transformacoes.recursiveFill(consoleController, malhaModel, p)).start();
                     limparPontos();
                 });
 
@@ -347,23 +355,23 @@ public class MenuController {
             }
             case ("Varredura"): {
 
-                // Button selecionarPontos = new Button("Limpar Pontos Selecionados");
-                // selecionarPontos.setOnAction(event -> {
-                //     getMalhaController().getPontosClicados().clear();
-                // });
+                Button selecionarPontos = new Button("Limpar Pontos Selecionados");
+                selecionarPontos.setOnAction(event -> {
+                    getMalhaController().getPontosClicados().clear();
+                });
 
-                // Button recursivo = new Button("Preenchimento Recursivo");
-                // recursivo.setOnAction(e -> {
-                //     Ponto p = new Ponto(getMalhaController().getFistPonto().getX() + getMalhaModel().getX(),
-                //             getMalhaController().getFistPonto().getY() + getMalhaModel().getY());
+                Button recursivo = new Button("Executar");
+                recursivo.setOnAction(e -> {
+                    Ponto p = new Ponto(getMalhaController().getFistPonto().getX() + getMalhaModel().getX(),
+                            getMalhaModel().getY() - getMalhaController().getFistPonto().getY());
 
-                //     malhaController.getMalhaModel().getGridCheckBox()[p.getX()][p.getY()]
-                //             .setSelected(false);
-                //     Transformacoes.recursiveFill(consoleController, malhaModel, p);
-                //     limparPontos();
-                // });
+                    malhaController.getMalhaModel().getGridCheckBox()[p.getX()][p.getY()]
+                            .setSelected(false);
+                    new Thread(() -> Transformacoes.scanlineFill(consoleController, malhaModel, p)).start();
+                    limparPontos();
+                });
 
-                // titledPane.setContent(new VBox(selecionarPontos, recursivo));
+                titledPane.setContent(new VBox(selecionarPontos, recursivo));
 
                 break;
             }
@@ -506,7 +514,7 @@ public class MenuController {
         }
     }
 
-    private void limparPontos(){
+    private void limparPontos() {
         getMalhaController().getPontosClicados().clear();
     }
 }

@@ -10,7 +10,6 @@ public class CheckBoxXY extends CheckBox {
         return ponto;
     }
 
-    
     public CheckBoxXY(Ponto ponto) {
         this.ponto = ponto;
     }
