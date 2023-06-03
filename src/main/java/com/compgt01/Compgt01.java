@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 
 public class Compgt01 extends Application {
 
-    private final int PREF_MIN_WIDTH = 800;
-    private final int PREF_MIN_HEIGHT = 900;
+    private final int PREF_MIN_WIDTH = 1000;
+    private final int PREF_MIN_HEIGHT = 1000;
 
     public static void main(String[] args) {
         launch(args);

@@ -10,14 +10,16 @@ import com.compgt01.tools.Transformacoes;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 
 /**
@@ -28,6 +30,9 @@ public class MenuController {
 
     @FXML
     private TitledPane root;
+
+    @FXML
+    private TitledPane algorithmspane;
 
     @FXML
     private TextField x1;
@@ -55,9 +60,6 @@ public class MenuController {
 
     @FXML
     private Button clean;
-
-    @FXML
-    private ChoiceBox<String> choiceBox;
 
     @FXML
     private Slider addcolumnx;
@@ -119,110 +121,169 @@ public class MenuController {
 
     ObservableList<String> algorithms = FXCollections.observableArrayList(
             "Bresenham",
-            "Círculo",
+            "Circulo",
             "Curva",
             "Polilinha",
             "Preenchimento Recursivo",
             "Varredura",
-            "Recorte",
+            // "Recorte",
             "Rotação",
-            "Translação",
+            "Translacao",
             "Escala",
-            "Projeção Ortogonal",
+            "Projecao Ortogonal",
             "Perspectiva");
 
-    @FXML
-    private void initialize() {
-        // Your code goes here
+    Accordion stalgorithm = new Accordion();
+
+    private void algorithmsPaneBox(String algoritmo) {
+        TitledPane titledPane = new TitledPane();
+        titledPane.setText(algoritmo);
+        switch (algoritmo) {
+            case ("Bresenham"): {
+                TextField x001 = new TextField();
+                TextField y001 = new TextField();
+                TextField x002 = new TextField();
+                TextField y002 = new TextField();
+                x001.setPromptText("x");
+                y001.setPromptText("y");
+                x002.setPromptText("x");
+                y002.setPromptText("y");
+                Button b1 = new Button();
+                b1.setOnAction(e -> {
+                    Integer x01 = Integer.valueOf(x001.getText().strip());
+                    Integer y01 = Integer.valueOf(y001.getText().strip());
+
+                    Integer x02 = Integer.valueOf(x002.getText().strip());
+                    Integer y02 = Integer.valueOf(y002.getText().strip());
+
+                    consoleController.executeAlgorithm(
+                            String.format("Bresenham %d %d %d %d",
+                                    x01, y01, x02, y02));
+                    Transformacoes.bresenham(consoleController, this, malhaController, x01, y01, x02, y02);
+                });
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1));
+                break;
+            }
+            case ("Circulo"): {
+                TextField x001 = new TextField();
+                TextField y001 = new TextField();
+                TextField raio = new TextField();
+                x001.setPromptText("x");
+                y001.setPromptText("y");
+                raio.setPromptText("Raio");
+                Button b1 = new Button();
+                b1.setOnAction(e -> {
+                    consoleController.executeAlgorithm(
+                            String.format("Círculo %s %s %s",
+                                    raio.getText().strip(),
+                                    x001.getText().strip(),
+                                    y001.getText().strip()));
+                    Transformacoes.desenharCirculo(consoleController, this, malhaController,
+                            Integer.valueOf(raio.getText()
+                                    .strip()),
+                            Integer.valueOf(
+                                    x001.getText().strip()),
+                            Integer.valueOf(y001.getText().strip()));
+                });
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(raio), b1));
+                break;
+            }
+            case ("Curva"): {
+                TextField x001 = new TextField();
+                TextField y001 = new TextField();
+                TextField x002 = new TextField();
+                TextField y002 = new TextField();
+                x001.setPromptText("x");
+                y001.setPromptText("y");
+                x002.setPromptText("x");
+                y002.setPromptText("y");
+                Button b1 = new Button();
+                b1.setOnAction(e -> {
+                    Integer x01 = Integer.valueOf(x001.getText().strip());
+                    Integer y01 = Integer.valueOf(y001.getText().strip());
+
+                    Integer x02 = Integer.valueOf(x002.getText().strip());
+                    Integer y02 = Integer.valueOf(y002.getText().strip());
+
+                    Set<PontoBasier> pontosControle = new HashSet<>(0);
+                    for (String pontoCo : inputBasier.getText().split(";")) {
+                        String ponto[] = pontoCo.split(",");
+                        pontosControle.add(new PontoBasier(Integer.parseInt(ponto[0]),
+                                Integer.parseInt(ponto[1]),
+                                pontosControle.size()));
+                        Transformacoes.desenharCurvaBasier(this, malhaController, pontosControle);
+
+                    }
+                });
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), new Button()));
+
+                break;
+            }
+
+            case ("Polilinha"): {
+                break;
+            }
+
+            case ("Preenchimento Recursivo"): {
+                TextField x001 = new TextField();
+                TextField y001 = new TextField();
+                x001.setPromptText("x");
+                y001.setPromptText("y");
+                titledPane.setContent(new VBox(new HBox(x001, y001), new Button()));
+                break;
+            }
+            case ("Varredura"): {
+                break;
+            }
+
+            case ("Rotação"): {
+                TextField angulo = new TextField();
+                TextField pontopivo = new TextField();
+                angulo.setPromptText("e.g: 30º");
+                pontopivo.setPromptText("Pivô");
+                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivo), new Button()));
+                break;
+            }
+
+            case ("Translacao"): {
+                TextField x001 = new TextField();
+                TextField y001 = new TextField();
+                x001.setPromptText("x");
+                y001.setPromptText("y");
+                titledPane.setContent(new VBox(new HBox(x001, y001), new Button()));
+                break;
+            }
+            case ("Escala"): {
+                TextField x001 = new TextField();
+                TextField y001 = new TextField();
+                TextField pontofixo = new TextField();
+                x001.setPromptText("x");
+                y001.setPromptText("y");
+                pontofixo.setPromptText("Ponto fixo");
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(pontofixo), new Button()));
+                break;
+            }
+            case ("Projecao Ortogonal"): {
+                break;
+            }
+            case ("Perspectiva"): {
+                break;
+            }
+
+            default: {
+                throw new IllegalStateException();
+            }
+        }
+        stalgorithm.getPanes().add(titledPane);
     }
 
     @FXML
     public void initializeListeners() {
-        choiceBox.setItems(algorithms);
+        for (String item : algorithms) {
+            algorithmsPaneBox(item);
+        }
 
-        choiceBox.setOnAction(event -> {
-            switch (choiceBox.getValue()) {
-                case ("Bresenham"):
-                    Integer x01 = Integer.valueOf(x1.getText().strip());
-                    Integer y01 = Integer.valueOf(y1.getText().strip());
-
-                    Integer x02 = Integer.valueOf(y2.getText().strip());
-                    Integer y02 = Integer.valueOf(y2.getText().strip());
-
-                    Transformacoes.bresenham(this, malhaController, x01, y01, x02, y02);
-                    break;
-                case ("Círculo"):
-                    consoleController.executeAlgorithm(
-                            String.format("Círculo %s %s %s",
-                                    x2.getText().strip(),
-                                    x1.getText().strip(),
-                                    y1.getText().strip()));
-                    Transformacoes.desenharCirculo(consoleController, this, malhaController,
-                            Integer.valueOf(x2.getText()
-                                    .strip()),
-                            Integer.valueOf(
-                                    x1.getText().strip()),
-                            Integer.valueOf(y1.getText().strip()));
-                    break;
-                case ("Curva"):
-                    Set<PontoBasier> pontosControle = new HashSet<>(0);
-                    for (String pontoCo : inputBasier.getText().split(";")) {
-                        String ponto[] = pontoCo.split(",");
-                        pontosControle.add(new PontoBasier(Integer.parseInt(ponto[0]), Integer.parseInt(ponto[1]),
-                                pontosControle.size()));
-                    }
-
-                    Transformacoes.desenharCurvaBasier(this, malhaController, pontosControle);
-                    break;
-                // case ("Polilinha"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Preenchimento Recursivo"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Recorte"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Varredura"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Rotação"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Translação"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Escala"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Projeção Ortogonal"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                // case ("Perspectiva"):
-                // Integer x1 = Integer.valueOf(textx.getText().strip());
-                // Integer y1 = Integer.valueOf(texty.getText().strip());
-                // Transformacoes.bresenham(x1, y1, x2, y2);
-                // break;
-                default:
-                    break;
-            }
-        });
+        algorithmspane.setContent(stalgorithm);
 
         getMalhaController().getGridPane().setOnScroll((ScrollEvent event) -> {
             if (event.getDeltaY() != 0) {

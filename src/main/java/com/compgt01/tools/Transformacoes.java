@@ -49,7 +49,9 @@ public class Transformacoes {
         return result;
     }
 
-    public static void bresenham(MenuController menuController, MalhaController malhaController,
+    public static void bresenham(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
             int centerX, int centerY, int destX, int destY) {
 
         System.out.println(String.format("%d %d %d %d", centerX, centerY, destX, destY));
@@ -58,10 +60,11 @@ public class Transformacoes {
         pontos.forEach(e -> {
             try {
                 System.out.println(e);
-                malhaController.getMalhaModel().getGridCheckBox()[e.getX() + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX()
+                        + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
-                System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
+                console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
             }
 
         });
@@ -115,7 +118,8 @@ public class Transformacoes {
         pontos.forEach(e -> {
 
             try {
-                malhaController.getMalhaModel().getGridCheckBox()[menuController.getMalhaModel().getY() - e.getY()][e.getX() + menuController.getMalhaModel().getX()]
+                malhaController.getMalhaModel().getGridCheckBox()[menuController.getMalhaModel().getY() - e.getY()][e
+                        .getX() + menuController.getMalhaModel().getX()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
@@ -176,7 +180,8 @@ public class Transformacoes {
         pontosBezier.forEach(e -> {
 
             try {
-                malhaController.getMalhaModel().getGridCheckBox()[e.getX() + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX()
+                        + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));

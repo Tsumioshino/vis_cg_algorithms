@@ -27,7 +27,7 @@
                     <Button fx:id="clear" text="Clear" onAction="#onClear" />
                     <Button fx:id="submit" text="Submit" onAction="#onSubmit" />
                 </HBox>
-                <ChoiceBox fx:id="choiceBox" />
+                <TitledPane fx:id="algorithmspane" text="Algoritmos"/>
                 <TextField fx:id="newx" prefColumnCount="3" />
                 <TextField fx:id="newy" prefColumnCount="3" />
                 <Button fx:id="clear" text="Destroy" onAction="#onDestruction" />
