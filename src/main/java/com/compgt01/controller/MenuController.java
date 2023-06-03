@@ -1,18 +1,34 @@
 package com.compgt01.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import com.compgt01.model.MalhaModel;
+import com.compgt01.model.PontoBasier;
+import com.compgt01.tools.Transformacoes;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.transform.Scale;
 
 /**
  *
@@ -193,65 +209,86 @@ public class MenuController {
                 y001.setPromptText("y");
                 x002.setPromptText("x");
                 y002.setPromptText("y");
+                x001.setPrefColumnCount(3);
+                y001.setPrefColumnCount(3);
+                x002.setPrefColumnCount(3);
+                y002.setPrefColumnCount(3);
 
                 Button insert = new Button();
-
                 insert.setOnAction(e -> {
                     Dialog<List<String>> dialog = new Dialog<>();
                     dialog.setTitle("Login Dialog");
                     dialog.setHeaderText("Look, a Custom Login Dialog");
                     dialog.setResizable(true);
                     // Set the button types.
-                    ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
-                    dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+                    ButtonType okButton = new ButtonType("Confirmar", ButtonData.OK_DONE);
+                    dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
 
                     // Create the username and password labels and fields.
+                    HBox ffff = new HBox();
                     GridPane grid = new GridPane();
 
                     TextField x0001 = new TextField();
                     TextField y0001 = new TextField();
+
                     x0001.setPromptText("x");
                     y0001.setPromptText("y");
-                    Button insert2 = new Button();
+                    Button insert2 = new Button("+");
 
                     grid.add(x0001, 0, 0);
                     grid.add(y0001, 1, 0);
-                    grid.add(insert2, 2, 0);
+
+                    List<String> inputList = new ArrayList<>();
 
                     insert2.setOnAction(e2 -> {
                         pcc += 1;
                         TextField x00001 = new TextField();
                         TextField y00001 = new TextField();
-                        x0001.setPromptText("x");
-                        y0001.setPromptText("y");
+                        x00001.setPromptText("x");
+                        y00001.setPromptText("y");
                         grid.add(x00001, 0, pcc);
                         grid.add(y00001, 1, pcc);
-
-                        dialog.getDialogPane().setContent(grid);
+                        inputList.add(String.format("%s, %s;", x00001.getText(), y00001.getText()));
+                        dialog.getDialogPane().setContent(ffff);
                     });
-                    dialog.getDialogPane().setContent(grid);
 
+                    ffff.getChildren().addAll(grid, insert2);
+
+                    dialog.getDialogPane().setContent(ffff);
+
+                    dialog.setResultConverter(dialogButton -> {
+                        if (dialogButton == okButton) {
+                            return inputList;
+                        }
+                        return null;
+                    });
                     // Convert the result to a list of value pairs when the OK button is clicked.
 
                     Optional<List<String>> result = dialog.showAndWait();
+                    System.out.println(result.isPresent());
 
-                    if (result.get() == ButtonType.OK) {
+                    result.ifPresent(dialogResult -> {
                         pontoscontrole.clear();
-                        for (int i = 0; i <= pcc; i++) {
-                            TextField xField = (TextField) grid.getChildren().get(i * 2);
-                            TextField yField = (TextField) grid.getChildren().get(i * 2 + 1);
-                            String x00001 = xField.getText();
-                            String y00001 = yField.getText();
-                            pontoscontrole.add(String.format("%s, %s", x00001, y00001));
-                            System.out.println("hi");
+                        List<String> valuePairs = new ArrayList<>();
+                        List<Node> children = grid.getChildren();
 
+                        for (int i = 0; i < children.size() - 1; i += 2) {
+                            Node node1 = children.get(i);
+                            Node node2 = children.get(i + 1);
+
+                            if (node1 instanceof TextField && node2 instanceof TextField) {
+                                TextField textField1 = (TextField) node1;
+                                TextField textField2 = (TextField) node2;
+                                valuePairs.add(String.format("%s,%s", textField1.getText(), textField2.getText()));
+                            }
                         }
-                        return pontoscontrole;
-                    }
 
-                    result.ifPresent(valuePairs -> {
+                        pontoscontrole.addAll(valuePairs);
+                        System.out.println(valuePairs);
+                        System.out.println(pontoscontrole);
+
                         for (String value : valuePairs) {
-                            System.out.println("Value 1: " + value);
+                            System.out.println("Value: " + value);
                         }
                     });
                 });
@@ -271,16 +308,16 @@ public class MenuController {
                     Set<PontoBasier> pontosControle = new HashSet<>(0);
 
                     for (String pontoCo : pontoscontrole) {
-                        String ponto[] = pontoCo.split(",");
-                        pontosControle.add(new PontoBasier(Integer.parseInt(ponto[0]),
+                        String[] ponto = pontoCo.split(",");
+                        pontosControle.add(new PontoBasier(
+                                Integer.parseInt(ponto[0]),
                                 Integer.parseInt(ponto[1]),
                                 pontosControle.size()));
-                        consoleController.executeAlgorithm(
-                                String.format("CurvaBezier %d %d %d %d",
-                                        x01, y01, x02, y02));
-                        Transformacoes.desenharCurvaBasier(consoleController, this, malhaController, pontosControle);
-
                     }
+                    consoleController.executeAlgorithm(
+                            String.format("CurvaBezier %d %d %d %d",
+                                    x01, y01, x02, y02));
+                    Transformacoes.desenharCurvaBasier(consoleController, this, malhaController, pontosControle);
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), insert, b1));
 
@@ -344,6 +381,10 @@ public class MenuController {
         stalgorithm.getPanes().add(titledPane);
     }
 
+    // private TextField createTextField(String name) {
+    // TextField input = new TextField();
+
+    // }
     @FXML
     public void initializeListeners() {
         for (String item : algorithms) {

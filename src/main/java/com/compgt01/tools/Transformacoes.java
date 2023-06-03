@@ -190,7 +190,7 @@ public class Transformacoes {
             }
 
         });
-
+        
     }
 
     private static Set<PontoBasier> calcularPontosBezier(double tInicio, double tFim, double incremento,
