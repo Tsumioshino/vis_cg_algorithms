@@ -6,6 +6,7 @@ import java.util.Set;
 import com.compgt01.controller.ConsoleController;
 import com.compgt01.controller.MalhaController;
 import com.compgt01.controller.MenuController;
+import com.compgt01.model.MalhaModel;
 import com.compgt01.model.Ponto;
 import com.compgt01.model.PontoBasier;
 
@@ -47,6 +48,36 @@ public class Transformacoes {
         result[1] = Integer.parseInt(coordenada.substring(1, commaLoc));
 
         return result;
+    }
+
+    public static void recursiveFill(ConsoleController console, MalhaModel malhaModel, Ponto ponto) {
+        recursiveFill(console, malhaModel, ponto.getX(), ponto.getY());
+    }
+
+    private static void recursiveFill(ConsoleController console, MalhaModel malhaModel, int row, int col) {
+
+        int rows = malhaModel.getX() * 2 + 1;
+        int cols = malhaModel.getY() * 2 + 1;
+
+        // Verificar se as coordenadas estão dentro dos limites da grade
+        if (row < 0 || row >= rows || col < 0 || col >= cols) {
+            return;
+        }
+
+        // Verificar se a célula já está preenchida ou se é uma borda
+        if (malhaModel.getGridCheckBox()[row][col].isSelected()) {
+            return;
+        }
+
+        // Preencher a célula atual com a cor especificada
+
+        malhaModel.getGridCheckBox()[row][col].setSelected(true);
+
+        // Chamar recursivamente o preenchimento para as células vizinhas
+        recursiveFill(console, malhaModel, row - 1, col); // Célula acima
+        recursiveFill(console, malhaModel, row + 1, col); // Célula abaixo
+        recursiveFill(console, malhaModel, row, col - 1); // Célula à esquerda
+        recursiveFill(console, malhaModel, row, col + 1); // Célula à direita
     }
 
     public static void bresenham(ConsoleController console,
@@ -91,11 +122,6 @@ public class Transformacoes {
             }
 
         });
-    }
-
-    public static void main(String[] args) {
-        Set<Ponto> pontos = calcularPontosReta(0, 0, 10, 10);
-        pontos.forEach(System.out::println);
     }
 
     private static HashSet<Ponto> calcularPontosReta(int x1, int y1, int x2, int y2) {
@@ -148,7 +174,6 @@ public class Transformacoes {
             }
 
         });
-
     }
 
     private static void desenharCirculo(Set<Ponto> pontos, int radius, int centerX, int centerY) {

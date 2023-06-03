@@ -26,7 +26,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -300,14 +299,13 @@ public class MenuController {
 
             case ("Polilinha"): {
                 Button selecionarPontos = new Button("Limpar Pontos Selecionados");
-
-                selecionarPontos.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                selecionarPontos.setOnAction(event -> {
                     getMalhaController().getPontosClicados().clear();
                 });
 
                 Button executarPolilinha = new Button("Desenhar");
 
-                executarPolilinha.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                executarPolilinha.setOnAction(event -> {
                     List<Ponto> clicados = getMalhaController().getPontosClicados();
                     for (int i = 0; i < clicados.size(); i++) {
                         Ponto primeiro = clicados.get(i);
@@ -328,14 +326,45 @@ public class MenuController {
             }
 
             case ("Preenchimento Recursivo"): {
-                TextField x001 = createTextField("x");
-                TextField y001 = createTextField("y");
-                Button b1 = new Button("Executar");
+                Button selecionarPontos = new Button("Limpar Pontos Selecionados");
+                selecionarPontos.setOnAction(event -> {
+                    getMalhaController().getPontosClicados().clear();
+                });
 
-                titledPane.setContent(new VBox(new HBox(x001, y001), b1));
+                Button recursivo = new Button("Preenchimento Recursivo");
+                recursivo.setOnAction(e -> {
+                    Ponto p = new Ponto(getMalhaController().getFistPonto().getX() + getMalhaModel().getX(),
+                            getMalhaController().getFistPonto().getY() + getMalhaModel().getY());
+
+                    malhaController.getMalhaModel().getGridCheckBox()[p.getX()][p.getY()]
+                            .setSelected(false);
+                    Transformacoes.recursiveFill(consoleController, malhaModel, p);
+                    limparPontos();
+                });
+
+                titledPane.setContent(new VBox(selecionarPontos, recursivo));
                 break;
             }
             case ("Varredura"): {
+
+                // Button selecionarPontos = new Button("Limpar Pontos Selecionados");
+                // selecionarPontos.setOnAction(event -> {
+                //     getMalhaController().getPontosClicados().clear();
+                // });
+
+                // Button recursivo = new Button("Preenchimento Recursivo");
+                // recursivo.setOnAction(e -> {
+                //     Ponto p = new Ponto(getMalhaController().getFistPonto().getX() + getMalhaModel().getX(),
+                //             getMalhaController().getFistPonto().getY() + getMalhaModel().getY());
+
+                //     malhaController.getMalhaModel().getGridCheckBox()[p.getX()][p.getY()]
+                //             .setSelected(false);
+                //     Transformacoes.recursiveFill(consoleController, malhaModel, p);
+                //     limparPontos();
+                // });
+
+                // titledPane.setContent(new VBox(selecionarPontos, recursivo));
+
                 break;
             }
 
@@ -477,4 +506,7 @@ public class MenuController {
         }
     }
 
+    private void limparPontos(){
+        getMalhaController().getPontosClicados().clear();
+    }
 }
