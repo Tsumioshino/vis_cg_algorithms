@@ -182,10 +182,10 @@ public class MenuController {
                 break;
             }
             case ("Curva"): {
-                TextField x001 = createTextField("x");
-                TextField y001 = createTextField("y");
-                TextField x002 = createTextField("x");
-                TextField y002 = createTextField("y");
+                TextField x001 = createTextField("x_ini");
+                TextField y001 = createTextField("y_ini");
+                TextField x002 = createTextField("x_fim");
+                TextField y002 = createTextField("y_fim");
 
                 Button insert = new Button("Pontos de Controle");
                 insert.setOnAction(e -> {
@@ -270,13 +270,15 @@ public class MenuController {
 
                     Set<PontoBasier> pontosControle = new HashSet<>(0);
 
+                    pontosControle.add(new PontoBasier(x1,y1,0));
                     for (String pontoCo : pontoscontrole) {
                         String[] ponto = pontoCo.split(",");
                         pontosControle.add(new PontoBasier(
-                                Integer.parseInt(ponto[0]),
-                                Integer.parseInt(ponto[1]),
-                                pontosControle.size()));
+                        Integer.parseInt(ponto[0]),
+                        Integer.parseInt(ponto[1]),
+                        pontosControle.size()));
                     }
+                    pontosControle.add(new PontoBasier(x2, y2, pontosControle.size()));
                     consoleController.executeAlgorithm(
                             String.format("CurvaBezier %d %d %d %d",
                                     x1, y1, x2, y2));
