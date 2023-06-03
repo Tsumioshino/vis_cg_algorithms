@@ -58,12 +58,9 @@ public class Transformacoes {
             MalhaController malhaController,
             int centerX, int centerY, int destX, int destY) {
 
-        System.out.println(String.format("%d %d %d %d", centerX, centerY, destX, destY));
         Set<Ponto> pontos = calcularPontosReta(centerX, centerY, destX, destY);
-        System.out.println(pontos.isEmpty());
         pontos.forEach(e -> {
             try {
-                System.out.println(e);
                 malhaController.getMalhaModel().getGridCheckBox()[e.getX()
                         + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
@@ -79,8 +76,6 @@ public class Transformacoes {
             MenuController menuController,
             MalhaController malhaController,
             int x1, int y1) {
-
-        System.out.println(String.format("%d %d", x1, y1));
 
         CheckBox[][] gridCheckBox = malhaController.getMalhaModel().getGridCheckBox();
         CheckBox[][] gridCheckBoxCopy = new CheckBox[gridCheckBox.length][];
@@ -101,7 +96,6 @@ public class Transformacoes {
                     CheckBox checkbox = gridCheckBoxCopy[i][j];
                     if (checkbox.isSelected()) {
                         try {
-                            System.out.println(String.format("%d %d", i + x1, i + y1));
                             gridCheckBox[i][j].setSelected(false);
                             gridCheckBox[i + x1][j - y1].setSelected(true);
                         } catch (IndexOutOfBoundsException exception) {
@@ -119,7 +113,6 @@ public class Transformacoes {
                     CheckBox checkbox = gridCheckBoxCopy[i][j];
                     if (checkbox.isSelected()) {
                         try {
-                            System.out.println(String.format("%d %d", i + x1, i + y1));
                             gridCheckBox[i][j].setSelected(false);
                             gridCheckBox[i + x1][j - y1].setSelected(true);
                         } catch (IndexOutOfBoundsException exception) {
@@ -138,9 +131,6 @@ public class Transformacoes {
                                                                                    // to radians
         double angleRad = Math.toRadians(angle);
 
-        System.out.println("These X and Y are input");
-        System.out.println(String.format("x: %d y: %d", vector[0], vector[1]));
-
         // Perform translation to pivot point
         double translatedX = vector[0] - pivot[0];
         double translatedY = vector[1] - pivot[1];
@@ -153,8 +143,6 @@ public class Transformacoes {
         double finalX = rotatedX + pivot[0];
         double finalY = rotatedY + pivot[1];
         // Return rotated vector
-        System.out.println("These X and Y are the original");
-        System.out.println(String.format("x: %.2f y: %.2f", finalX, finalY));
 
         return new int[] { (int) Math.round(finalX), (int) Math.round(finalY) };
     }
@@ -171,8 +159,7 @@ public class Transformacoes {
             for (int j = 0; j < y; j++) {
                 CheckBox checkbox = gridCheckBox[i][j];
                 if (checkbox.isSelected()) {
-                    try { // i = 0, menuController.getMalhaModel().getX() = 21;
-                          // menuController.getMalhaModel().getY() = 21, j = 0
+                    try {
                         int[] vec = { i - menuController.getMalhaModel().getX(),
                                 j - menuController.getMalhaModel().getY() };
                         rots.add(rotateVector(vec, angulo, pivo));
@@ -188,9 +175,6 @@ public class Transformacoes {
 
         rots.forEach(e -> {
             try {
-                System.out.println("These elements should be painted");
-                System.out.println(String.format("x: %d y: %d", e[0], e[1]));
-
                 malhaController.getMalhaModel()
                         .getGridCheckBox()[e[0] + menuController.getMalhaModel()
                                 .getX()][menuController.getMalhaModel()
@@ -204,7 +188,6 @@ public class Transformacoes {
 
     public static void main(String[] args) {
         Set<Ponto> pontos = calcularPontosReta(0, 0, 10, 10);
-        pontos.forEach(System.out::println);
     }
 
     private static HashSet<Ponto> calcularPontosReta(int x1, int y1, int x2, int y2) {

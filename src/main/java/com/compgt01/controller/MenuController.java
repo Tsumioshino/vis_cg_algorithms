@@ -319,8 +319,8 @@ public class MenuController {
                             Double.valueOf(pontopivoy.getText().strip()) };
 
                     consoleController.executeAlgorithm(
-                            String.format("Rotacao %s %s",
-                                    x1, y1));
+                            String.format("Rotacao %.2f %.2f %.2f",
+                                    x1, y1[0], y1[1]));
                     new Thread(() -> Transformacoes.rotacao(consoleController, this, malhaController, -x1, y1)).start();
                 });
 
