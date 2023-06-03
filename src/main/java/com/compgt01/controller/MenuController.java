@@ -13,6 +13,7 @@ import com.compgt01.tools.Transformacoes;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -41,21 +42,6 @@ public class MenuController {
 
     @FXML
     private TitledPane algorithmspane;
-
-    @FXML
-    private TextField x1;
-
-    @FXML
-    private TextField y1;
-
-    @FXML
-    private TextField x2;
-
-    @FXML
-    private TextField y2;
-
-    @FXML
-    private TextField inputBasier;
 
     @FXML
     private TextField textx;
@@ -152,38 +138,33 @@ public class MenuController {
         titledPane.setText(algoritmo);
         switch (algoritmo) {
             case ("Bresenham"): {
-                TextField x001 = new TextField();
-                TextField y001 = new TextField();
-                TextField x002 = new TextField();
-                TextField y002 = new TextField();
-                x001.setPromptText("x");
-                y001.setPromptText("y");
-                x002.setPromptText("x");
-                y002.setPromptText("y");
-                Button b1 = new Button();
+                TextField x001 = createTextField("x");
+                TextField y001 = createTextField("y");
+                TextField x002 = createTextField("x");
+                TextField y002 = createTextField("y");
+                Button b1 = new Button("Executar");
                 b1.setOnAction(e -> {
-                    Integer x01 = Integer.valueOf(x001.getText().strip());
-                    Integer y01 = Integer.valueOf(y001.getText().strip());
+                    Integer x1 = Integer.valueOf(x001.getText().strip());
+                    Integer y1 = Integer.valueOf(y001.getText().strip());
 
-                    Integer x02 = Integer.valueOf(x002.getText().strip());
-                    Integer y02 = Integer.valueOf(y002.getText().strip());
+                    Integer x2 = Integer.valueOf(x002.getText().strip());
+                    Integer y2 = Integer.valueOf(y002.getText().strip());
 
                     consoleController.executeAlgorithm(
                             String.format("Bresenham %d %d %d %d",
-                                    x01, y01, x02, y02));
-                    Transformacoes.bresenham(consoleController, this, malhaController, x01, y01, x02, y02);
+                                    x1, y1, x2, y2));
+                    Transformacoes.bresenham(consoleController, this, malhaController, x1, y1, x2, y2);
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1));
                 break;
             }
             case ("Circulo"): {
-                TextField x001 = new TextField();
-                TextField y001 = new TextField();
+                TextField x001 = createTextField("x");
+                TextField y001 = createTextField("y");
                 TextField raio = new TextField();
-                x001.setPromptText("x");
-                y001.setPromptText("y");
                 raio.setPromptText("Raio");
-                Button b1 = new Button();
+
+                Button b1 = new Button("Executar");
                 b1.setOnAction(e -> {
                     consoleController.executeAlgorithm(
                             String.format("Círculo %s %s %s",
@@ -201,24 +182,16 @@ public class MenuController {
                 break;
             }
             case ("Curva"): {
-                TextField x001 = new TextField();
-                TextField y001 = new TextField();
-                TextField x002 = new TextField();
-                TextField y002 = new TextField();
-                x001.setPromptText("x");
-                y001.setPromptText("y");
-                x002.setPromptText("x");
-                y002.setPromptText("y");
-                x001.setPrefColumnCount(3);
-                y001.setPrefColumnCount(3);
-                x002.setPrefColumnCount(3);
-                y002.setPrefColumnCount(3);
+                TextField x001 = createTextField("x");
+                TextField y001 = createTextField("y");
+                TextField x002 = createTextField("x");
+                TextField y002 = createTextField("y");
 
-                Button insert = new Button();
+                Button insert = new Button("Pontos de Controle");
                 insert.setOnAction(e -> {
                     Dialog<List<String>> dialog = new Dialog<>();
-                    dialog.setTitle("Login Dialog");
-                    dialog.setHeaderText("Look, a Custom Login Dialog");
+                    dialog.setTitle("Pontos de Controle");
+                    dialog.setHeaderText("Insira os pontos de controle para a curva de Bezier");
                     dialog.setResizable(true);
                     // Set the button types.
                     ButtonType okButton = new ButtonType("Confirmar", ButtonData.OK_DONE);
@@ -227,12 +200,13 @@ public class MenuController {
                     // Create the username and password labels and fields.
                     HBox ffff = new HBox();
                     GridPane grid = new GridPane();
+                    grid.setHgap(10);
+                    grid.setVgap(10);
+                    grid.setPadding(new Insets(0, 10, 10, 0)); // margins around the whole grid
 
-                    TextField x0001 = new TextField();
-                    TextField y0001 = new TextField();
+                    TextField x0001 = createTextField("x");
+                    TextField y0001 = createTextField("y");
 
-                    x0001.setPromptText("x");
-                    y0001.setPromptText("y");
                     Button insert2 = new Button("+");
 
                     grid.add(x0001, 0, 0);
@@ -242,13 +216,12 @@ public class MenuController {
 
                     insert2.setOnAction(e2 -> {
                         pcc += 1;
-                        TextField x00001 = new TextField();
-                        TextField y00001 = new TextField();
-                        x00001.setPromptText("x");
-                        y00001.setPromptText("y");
-                        grid.add(x00001, 0, pcc);
-                        grid.add(y00001, 1, pcc);
-                        inputList.add(String.format("%s, %s;", x00001.getText(), y00001.getText()));
+                        TextField pcx = createTextField("x");
+                        TextField pcy = createTextField("y");
+
+                        grid.add(pcx, 0, pcc);
+                        grid.add(pcy, 1, pcc);
+                        inputList.add(String.format("%s, %s;", pcx.getText(), pcy.getText()));
                         dialog.getDialogPane().setContent(ffff);
                     });
 
@@ -265,7 +238,6 @@ public class MenuController {
                     // Convert the result to a list of value pairs when the OK button is clicked.
 
                     Optional<List<String>> result = dialog.showAndWait();
-                    System.out.println(result.isPresent());
 
                     result.ifPresent(dialogResult -> {
                         pontoscontrole.clear();
@@ -282,28 +254,19 @@ public class MenuController {
                                 valuePairs.add(String.format("%s,%s", textField1.getText(), textField2.getText()));
                             }
                         }
-
                         pontoscontrole.addAll(valuePairs);
-                        System.out.println(valuePairs);
-                        System.out.println(pontoscontrole);
-
-                        for (String value : valuePairs) {
-                            System.out.println("Value: " + value);
-                        }
                     });
                 });
 
-                Button b1 = new Button();
+                Button b1 = new Button("Executar");
 
                 b1.setOnAction(e -> {
                     pcc = 0;
-                    Integer x01 = Integer.valueOf(x001.getText().strip());
-                    Integer y01 = Integer.valueOf(y001.getText().strip());
+                    Integer x1 = Integer.valueOf(x001.getText().strip());
+                    Integer y1 = Integer.valueOf(y001.getText().strip());
 
-                    Integer x02 = Integer.valueOf(x002.getText().strip());
-                    Integer y02 = Integer.valueOf(y002.getText().strip());
-
-                    // String entered = result.get();
+                    Integer x2 = Integer.valueOf(x002.getText().strip());
+                    Integer y2 = Integer.valueOf(y002.getText().strip());
 
                     Set<PontoBasier> pontosControle = new HashSet<>(0);
 
@@ -316,7 +279,7 @@ public class MenuController {
                     }
                     consoleController.executeAlgorithm(
                             String.format("CurvaBezier %d %d %d %d",
-                                    x01, y01, x02, y02));
+                                    x1, y1, x2, y2));
                     Transformacoes.desenharCurvaBasier(consoleController, this, malhaController, pontosControle);
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), insert, b1));
@@ -329,11 +292,11 @@ public class MenuController {
             }
 
             case ("Preenchimento Recursivo"): {
-                TextField x001 = new TextField();
-                TextField y001 = new TextField();
-                x001.setPromptText("x");
-                y001.setPromptText("y");
-                titledPane.setContent(new VBox(new HBox(x001, y001), new Button()));
+                TextField x001 = createTextField("x");
+                TextField y001 = createTextField("y");
+                Button b1 = new Button("Executar");
+
+                titledPane.setContent(new VBox(new HBox(x001, y001), b1));
                 break;
             }
             case ("Varredura"): {
@@ -345,26 +308,28 @@ public class MenuController {
                 TextField pontopivo = new TextField();
                 angulo.setPromptText("e.g: 30º");
                 pontopivo.setPromptText("Pivô");
-                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivo), new Button()));
+                Button b1 = new Button("Executar");
+
+                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivo), b1));
                 break;
             }
 
             case ("Translacao"): {
-                TextField x001 = new TextField();
-                TextField y001 = new TextField();
-                x001.setPromptText("x");
-                y001.setPromptText("y");
-                titledPane.setContent(new VBox(new HBox(x001, y001), new Button()));
+                TextField x001 = createTextField("x");
+                TextField y001 = createTextField("y");
+                Button b1 = new Button("Executar");
+
+                titledPane.setContent(new VBox(new HBox(x001, y001), b1));
                 break;
             }
             case ("Escala"): {
-                TextField x001 = new TextField();
-                TextField y001 = new TextField();
+                TextField x001 = createTextField("x");
+                TextField y001 = createTextField("y");
                 TextField pontofixo = new TextField();
-                x001.setPromptText("x");
-                y001.setPromptText("y");
                 pontofixo.setPromptText("Ponto fixo");
-                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(pontofixo), new Button()));
+                Button b1 = new Button("Executar");
+
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(pontofixo), b1));
                 break;
             }
             case ("Projecao Ortogonal"): {
@@ -381,10 +346,14 @@ public class MenuController {
         stalgorithm.getPanes().add(titledPane);
     }
 
-    // private TextField createTextField(String name) {
-    // TextField input = new TextField();
+    private TextField createTextField(String nome) {
+        TextField input = new TextField();
+        input.setPromptText(nome);
+        input.setPrefColumnCount(3);
+        input.getStyleClass().add("genericInput");
+        return input;
+    }
 
-    // }
     @FXML
     public void initializeListeners() {
         for (String item : algorithms) {

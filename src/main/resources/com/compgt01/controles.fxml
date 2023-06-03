@@ -16,28 +16,30 @@
     xmlns:fx="http://javafx.com/fxml/1" 
     fx:controller="com.compgt01.controller.MenuController"
     text="Painel de Controle">
-    <BorderPane>
-        <left>
-            <VBox>
-                <HBox>
-                    <TextField fx:id="textx" prefColumnCount="3" promptText="x"/>
-                    <TextField fx:id="texty" prefColumnCount="3" promptText="y"/>
-                </HBox>
-                 <HBox>
-                    <Button fx:id="clear" text="Clear" onAction="#onClear" />
-                    <Button fx:id="submit" text="Submit" onAction="#onSubmit" />
-                </HBox>
-                <TitledPane fx:id="algorithmspane" text="Algoritmos"/>
-                <TextField fx:id="newx" prefColumnCount="3" />
-                <TextField fx:id="newy" prefColumnCount="3" />
-                <Button fx:id="clear" text="Destroy" onAction="#onDestruction" />
-                <TextField fx:id="x1" prefColumnCount="3" />
-                <TextField fx:id="y1" prefColumnCount="3" />
-                <TextField fx:id="x2" prefColumnCount="3" />
-                <TextField fx:id="y2" prefColumnCount="3" />
-                <Label text="Input pontos de Controle" />
-                <TextField fx:id="inputBasier" prefColumnCount="3" />
-            </VBox>
-        </left>
-    </BorderPane>
+    <VBox>
+        <HBox>
+            <TextField fx:id="textx" prefColumnCount="3" promptText="x"/>
+            <TextField fx:id="texty" prefColumnCount="3" promptText="y"/>
+        </HBox>
+            <HBox>
+            <Button fx:id="clear" text="Clear" onAction="#onClear" />
+            <Button fx:id="submit" text="Submit" onAction="#onSubmit" />
+        </HBox>
+        <TitledPane fx:id="algorithmspane" text="Algoritmos"/>
+
+        <TitledPane text="Configurações" expanded="false">
+            <TitledPane text="Nova Malha" expanded="false">
+                <VBox>
+                    <HBox>
+                        <TextField fx:id="newx" prefColumnCount="3" promptText="X"/>
+                        <TextField fx:id="newy" prefColumnCount="3" promptText="Y"/>
+                    </HBox>
+                    <Button fx:id="clear" 
+                    text="Executar" 
+                    maxWidth="${newx.maxWidth}"
+                    onAction="#onDestruction"/>  
+              </VBox>
+            </TitledPane>
+        </TitledPane>
+    </VBox>
 </TitledPane>

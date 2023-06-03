@@ -6,6 +6,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Created on : 8 de abr. de 2023, 10:33:38
     Author     : mmo
 */
+VBox,
+HBox {
+    -fx-spacing: 8;
+    -fx-alignment: "CENTER";
+}
 
 #root>* {
     -fx-spacing: 0;
@@ -23,6 +28,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 .check-box>.box>.mark {
     -fx-pref-width: 20px;
     -fx-pref-height: 20px;
+}
+
+.text-area {
+    -fx-font-family: Consolas;
+    -fx-font-size: 15;
+    -fx-text-fill: #ffffff;
+}
+
+.text-area .content {
+    -fx-background-color: #000000;
+    -fx-background-radius: 20;
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 20;
+    -fx-padding: 10px;
 }
 
 .selectedCheckBox:determinate .box {
@@ -47,18 +66,4 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 .selectedCutBox:selected .mark {
     -fx-opacity: 0;
-}
-
-.text-area {
-    -fx-font-family: Consolas;
-    -fx-font-size: 15;
-    -fx-text-fill: #ffffff;
-}
-
-.text-area .content {
-    -fx-background-color: #000000;
-    -fx-background-radius: 20;
-    -fx-border-color: #CCCCCC;
-    -fx-border-radius: 20;
-    -fx-padding: 10px;
 }
