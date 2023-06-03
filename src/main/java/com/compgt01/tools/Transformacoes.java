@@ -168,7 +168,9 @@ public class Transformacoes {
      * @return
      */
 
-    public static void desenharCurvaBasier(MenuController menuController, MalhaController malhaController,
+    public static void desenharCurvaBasier(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
             Set<PontoBasier> pontosControle) {
 
         // Calcular pontos na curva de Bezier
@@ -184,7 +186,7 @@ public class Transformacoes {
                         + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
-                System.out.println(String.format("x: %d y: %d fora da camada", e.getX(), e.getY()));
+                console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
             }
 
         });

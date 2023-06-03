@@ -20,7 +20,7 @@ public class Compgt01 extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("main.fxml"));
 
-        primaryStage.setTitle("CheckBox Experiment 1");
+        primaryStage.setTitle("Algoritmos - Computação Gráfica");
         Pane box = loader.<BorderPane>load();
 
         Scene scene = new Scene(box, PREF_MIN_WIDTH, PREF_MIN_HEIGHT);

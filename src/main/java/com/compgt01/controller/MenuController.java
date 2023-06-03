@@ -1,26 +1,18 @@
 package com.compgt01.controller;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.compgt01.model.MalhaModel;
-import com.compgt01.model.PontoBasier;
-import com.compgt01.tools.Transformacoes;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.transform.Scale;
 
 /**
  *
@@ -135,6 +127,10 @@ public class MenuController {
 
     Accordion stalgorithm = new Accordion();
 
+    int pcc = 0;
+
+    List<String> pontoscontrole = new ArrayList<>();
+
     private void algorithmsPaneBox(String algoritmo) {
         TitledPane titledPane = new TitledPane();
         titledPane.setText(algoritmo);
@@ -197,25 +193,96 @@ public class MenuController {
                 y001.setPromptText("y");
                 x002.setPromptText("x");
                 y002.setPromptText("y");
+
+                Button insert = new Button();
+
+                insert.setOnAction(e -> {
+                    Dialog<List<String>> dialog = new Dialog<>();
+                    dialog.setTitle("Login Dialog");
+                    dialog.setHeaderText("Look, a Custom Login Dialog");
+                    dialog.setResizable(true);
+                    // Set the button types.
+                    ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
+                    dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+                    // Create the username and password labels and fields.
+                    GridPane grid = new GridPane();
+
+                    TextField x0001 = new TextField();
+                    TextField y0001 = new TextField();
+                    x0001.setPromptText("x");
+                    y0001.setPromptText("y");
+                    Button insert2 = new Button();
+
+                    grid.add(x0001, 0, 0);
+                    grid.add(y0001, 1, 0);
+                    grid.add(insert2, 2, 0);
+
+                    insert2.setOnAction(e2 -> {
+                        pcc += 1;
+                        TextField x00001 = new TextField();
+                        TextField y00001 = new TextField();
+                        x0001.setPromptText("x");
+                        y0001.setPromptText("y");
+                        grid.add(x00001, 0, pcc);
+                        grid.add(y00001, 1, pcc);
+
+                        dialog.getDialogPane().setContent(grid);
+                    });
+                    dialog.getDialogPane().setContent(grid);
+
+                    // Convert the result to a list of value pairs when the OK button is clicked.
+
+                    Optional<List<String>> result = dialog.showAndWait();
+
+                    if (result.get() == ButtonType.OK) {
+                        pontoscontrole.clear();
+                        for (int i = 0; i <= pcc; i++) {
+                            TextField xField = (TextField) grid.getChildren().get(i * 2);
+                            TextField yField = (TextField) grid.getChildren().get(i * 2 + 1);
+                            String x00001 = xField.getText();
+                            String y00001 = yField.getText();
+                            pontoscontrole.add(String.format("%s, %s", x00001, y00001));
+                            System.out.println("hi");
+
+                        }
+                        return pontoscontrole;
+                    }
+
+                    result.ifPresent(valuePairs -> {
+                        for (String value : valuePairs) {
+                            System.out.println("Value 1: " + value);
+                        }
+                    });
+                });
+
                 Button b1 = new Button();
+
                 b1.setOnAction(e -> {
+                    pcc = 0;
                     Integer x01 = Integer.valueOf(x001.getText().strip());
                     Integer y01 = Integer.valueOf(y001.getText().strip());
 
                     Integer x02 = Integer.valueOf(x002.getText().strip());
                     Integer y02 = Integer.valueOf(y002.getText().strip());
 
+                    // String entered = result.get();
+
                     Set<PontoBasier> pontosControle = new HashSet<>(0);
-                    for (String pontoCo : inputBasier.getText().split(";")) {
+
+                    for (String pontoCo : pontoscontrole) {
                         String ponto[] = pontoCo.split(",");
                         pontosControle.add(new PontoBasier(Integer.parseInt(ponto[0]),
                                 Integer.parseInt(ponto[1]),
                                 pontosControle.size()));
-                        Transformacoes.desenharCurvaBasier(this, malhaController, pontosControle);
+                        consoleController.executeAlgorithm(
+                                String.format("CurvaBezier %d %d %d %d",
+                                        x01, y01, x02, y02));
+                        Transformacoes.desenharCurvaBasier(consoleController, this, malhaController, pontosControle);
 
                     }
                 });
-                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), new Button()));
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), insert, b1));
 
                 break;
             }
