@@ -307,12 +307,24 @@ public class MenuController {
 
             case ("Rotação"): {
                 TextField angulo = new TextField();
-                TextField pontopivo = new TextField();
+                TextField pontopivox = createTextField("Pivô X");
+                TextField pontopivoy = createTextField("Pivô Y");
+
                 angulo.setPromptText("e.g: 30º");
-                pontopivo.setPromptText("Pivô");
                 Button b1 = new Button("Executar");
 
-                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivo), b1));
+                b1.setOnAction(e -> {
+                    Double x1 = Double.valueOf(angulo.getText().strip());
+                    Double[] y1 = { Double.valueOf(pontopivox.getText().strip()),
+                            Double.valueOf(pontopivoy.getText().strip()) };
+
+                    consoleController.executeAlgorithm(
+                            String.format("Rotacao %s %s",
+                                    x1, y1));
+                    new Thread(() -> Transformacoes.rotacao(consoleController, this, malhaController, -x1, y1)).start();
+                });
+
+                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivox, pontopivoy), b1));
                 break;
             }
 
@@ -322,7 +334,6 @@ public class MenuController {
                 Button b1 = new Button("Executar");
 
                 b1.setOnAction(e -> {
-                    pcc = 0;
                     Integer x1 = Integer.valueOf(x001.getText().strip());
                     Integer y1 = Integer.valueOf(y001.getText().strip());
 

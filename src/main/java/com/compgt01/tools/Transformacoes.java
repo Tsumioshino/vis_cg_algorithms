@@ -1,6 +1,8 @@
 package com.compgt01.tools;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.compgt01.controller.ConsoleController;
@@ -130,6 +132,74 @@ public class Transformacoes {
                 }
             }
         }
+    }
+
+    public static int[] rotateVector(int[] vector, Double angle, Double[] pivot) { // Convert angle from degrees
+                                                                                   // to radians
+        double angleRad = Math.toRadians(angle);
+
+        System.out.println("These X and Y are input");
+        System.out.println(String.format("x: %d y: %d", vector[0], vector[1]));
+
+        // Perform translation to pivot point
+        double translatedX = vector[0] - pivot[0];
+        double translatedY = vector[1] - pivot[1];
+
+        // Perform rotation around the pivot point
+        double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
+        double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
+
+        // Perform translation back from the pivot point
+        double finalX = rotatedX + pivot[0];
+        double finalY = rotatedY + pivot[1];
+        // Return rotated vector
+        System.out.println("These X and Y are the original");
+        System.out.println(String.format("x: %.2f y: %.2f", finalX, finalY));
+
+        return new int[] { (int) Math.round(finalX), (int) Math.round(finalY) };
+    }
+
+    public static void rotacao(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
+            Double angulo, Double[] pivo) {
+        List<int[]> rots = new ArrayList<>();
+        CheckBox[][] gridCheckBox = malhaController.getMalhaModel().getGridCheckBox();
+        int x = (menuController.getMalhaModel().getX() * 2 + 1);
+        int y = (menuController.getMalhaModel().getY() * 2 + 1);
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                CheckBox checkbox = gridCheckBox[i][j];
+                if (checkbox.isSelected()) {
+                    try { // i = 0, menuController.getMalhaModel().getX() = 21;
+                          // menuController.getMalhaModel().getY() = 21, j = 0
+                        int[] vec = { i - menuController.getMalhaModel().getX(),
+                                j - menuController.getMalhaModel().getY() };
+                        rots.add(rotateVector(vec, angulo, pivo));
+                        checkbox.setSelected(false);
+
+                    } catch (IndexOutOfBoundsException exception) {
+                        console.redirectToConsole(
+                                String.format("x: %d y: %d fora da camada", x - i, y - j, "\n"));
+                    }
+                }
+            }
+        }
+
+        rots.forEach(e -> {
+            try {
+                System.out.println("These elements should be painted");
+                System.out.println(String.format("x: %d y: %d", e[0], e[1]));
+
+                malhaController.getMalhaModel()
+                        .getGridCheckBox()[e[0] + menuController.getMalhaModel()
+                                .getX()][menuController.getMalhaModel()
+                                        .getY() + e[1]]
+                        .setSelected(true);
+            } catch (IndexOutOfBoundsException exception) {
+                console.redirectToConsole(String.format("x: %s y: %s fora da camada", e[0], e[1], "\n"));
+            }
+        });
     }
 
     public static void main(String[] args) {
