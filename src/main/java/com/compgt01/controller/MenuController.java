@@ -308,8 +308,7 @@ public class MenuController {
 
                 executarPolilinha.setOnAction(event -> {
                     new Thread(
-                            () ->
-                            {
+                            () -> {
                                 List<Ponto> clicados = getMalhaController().getPontosClicados();
                                 for (int i = 0; i < clicados.size(); i++) {
                                     Ponto primeiro = clicados.get(i);
@@ -323,9 +322,7 @@ public class MenuController {
                                                 clicados.get(0));
                                     }
                                 }
-                                getMalhaController().getPontosClicados().clear();
-                            }
-                    ).start();
+                            }).start();
 
                 });
 
@@ -396,13 +393,41 @@ public class MenuController {
                 break;
             }
             case ("Escala"): {
-                TextField x001 = createTextField("x");
-                TextField y001 = createTextField("y");
-                TextField pontofixo = new TextField();
-                pontofixo.setPromptText("Ponto fixo");
+                TextField x001 = createTextField("pivo_x");
+                TextField y001 = createTextField("pivo_y");
+                TextField x002 = createTextField("scala_x");
+                TextField y002 = createTextField("scala_x");
                 Button b1 = new Button("Executar");
+                b1.setOnAction(e -> {
+                    new Thread(() -> {
 
-                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(pontofixo), b1));
+                        Integer x01 = Integer.parseInt(x001.getText().strip()) + getMalhaModel().getX();
+                        Integer y01 = Integer.parseInt(y001.getText().strip()) + getMalhaModel().getY();
+                        Double x02 = Double.parseDouble(x002.getText().strip());
+                        Double y02 = Double.parseDouble(y002.getText().strip());
+
+                        List<Ponto> pontos = Transformacoes.scalePontos(malhaModel,
+                                getMalhaController().getRealPontosClicados(), x01, y01, x02, y02);
+
+                        onClear();
+
+                        for (int i = 0; i < pontos.size(); i++) {
+                            Ponto primeiro = pontos.get(i);
+                            if (i + 1 < pontos.size()) {
+                                Ponto segundo = pontos.get(i + 1);
+                                System.out.println("Par: " + primeiro + ", " + segundo);
+                                Transformacoes.bresenhamRealPoint(consoleController, malhaController, segundo,
+                                        primeiro);
+                            } else {
+                                Transformacoes.bresenhamRealPoint(consoleController, malhaController,
+                                        primeiro, pontos.get(0));
+                            }
+                        }
+
+                    }).run();
+                });
+
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1));
                 break;
             }
             case ("Projecao Ortogonal"): {
@@ -516,5 +541,7 @@ public class MenuController {
 
     private void limparPontos() {
         getMalhaController().getPontosClicados().clear();
+        getMalhaController().getRealPontosClicados().clear();
     }
+
 }

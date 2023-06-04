@@ -1,6 +1,8 @@
 package com.compgt01.tools;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.compgt01.controller.ConsoleController;
@@ -123,6 +125,30 @@ public class Transformacoes {
         scanlineFill(console, malhaModel, row + 1, col); // Linha abaixo
     }
 
+    public static List<Ponto> scalePontos(MalhaModel malha, List<Ponto> pontos, int pivotX, int pivotY, double scaleX,
+            double scaleY) {
+        List<Ponto> pontosTransformados = scalePontos(pontos, pivotX, pivotY, scaleX, scaleY);
+
+        // for (Ponto ponto : pontosTransformados) {
+        // malha.getGridCheckBox()[ponto.getX()][ponto.getY()].setSelected(true);
+        // }
+
+        return pontosTransformados;
+    }
+
+    public static List<Ponto> scalePontos(List<Ponto> pontos, int pivotX, int pivotY, double scaleX, double scaleY) {
+        List<Ponto> pontosTransformados = new ArrayList<>();
+
+        for (Ponto ponto : pontos) {
+            int x = ponto.getX();
+            int y = ponto.getY();
+            pontosTransformados.add(new Ponto((int) (pivotX + (x - pivotX) * scaleX),
+                    (int) (pivotY + (y - pivotY) * scaleY)));
+        }
+
+        return pontosTransformados;
+    }
+
     public static void bresenham(ConsoleController console,
             MenuController menuController,
             MalhaController malhaController,
@@ -164,6 +190,24 @@ public class Transformacoes {
                 console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
             }
 
+        });
+    }
+
+    public static void bresenhamRealPoint(ConsoleController console,
+            MalhaController malhaController,
+            Ponto init, Ponto fim) {
+
+        console.redirectToConsole(String.format("Pintando de %s a %s.\n", init, fim));
+
+        Set<Ponto> pontos = calcularPontosReta(init.getX(), init.getY(), fim.getX(), fim.getY());
+        pontos.forEach(e -> {
+            try {
+                System.out.println(e);
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX()][e.getY()]
+                        .setSelected(true);
+            } catch (IndexOutOfBoundsException exception) {
+                console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
+            }
         });
     }
 

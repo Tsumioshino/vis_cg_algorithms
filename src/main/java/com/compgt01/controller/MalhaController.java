@@ -9,7 +9,6 @@ import com.compgt01.model.Ponto;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -27,6 +26,8 @@ public class MalhaController {
     private GridPane gridPane = new GridPane();
 
     private List<Ponto> pontosClicados = new LinkedList<>();
+
+    private List<Ponto> realPontosClicados = new LinkedList<>();
 
     public void setGridPane(GridPane gridPane) {
         this.gridPane = gridPane;
@@ -67,7 +68,7 @@ public class MalhaController {
         gridpane.setId("basePontos");
 
         getMalhaModel()
-                .setGridCheckBox(new CheckBox[(getMalhaModel().getX() * 2) + 1][(getMalhaModel().getY() * 2) + 1]);
+                .setGridCheckBox(new CheckBoxXY[(getMalhaModel().getX() * 2) + 1][(getMalhaModel().getY() * 2) + 1]);
 
         for (int x = 0; x < (getMalhaModel().getX() * 2) + 1; x++) {
             for (int y = 0; y < (getMalhaModel().getY() * 2) + 1; y++) {
@@ -76,10 +77,9 @@ public class MalhaController {
                 getMalhaModel().getGridCheckBox()[x][y].addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
                     CheckBoxXY checkBoxXY = (CheckBoxXY) event.getSource();
                     pontosClicados.add(checkBoxXY.getPonto());
+                    realPontosClicados.add(checkBoxXY.getPontoReal());
                     System.out.println(checkBoxXY.getPonto());
-                    System.out.println(String.format("Real Ponto %d %d", checkBoxXY.getPonto().getX() + getMalhaModel()
-                            .getX(),
-                            getMalhaModel().getY() - checkBoxXY.getPonto().getY()));
+                    System.out.println(checkBoxXY.getPontoReal());
                 });
                 gridpane.add(getMalhaModel().getGridCheckBox()[x][y], x, y);
             }
@@ -113,8 +113,7 @@ public class MalhaController {
     }
 
     public CheckBoxXY createTile(int x, int y) {
-
-        CheckBoxXY tile = new CheckBoxXY(new Ponto(x, y));
+        CheckBoxXY tile = new CheckBoxXY(new Ponto(x, y), new Ponto(x +getMalhaModel().getX(),  getMalhaModel().getY() - y));
         tile.setId(String.format("(%d, %d)", x, y));
 
         tile.getStyleClass().add("selectedCheckBox");
@@ -132,5 +131,13 @@ public class MalhaController {
 
     public Ponto getFistPonto() {
         return this.pontosClicados.get(0);
+    }
+
+    public List<Ponto> getRealPontosClicados() {
+        return realPontosClicados;
+    }
+
+    public void setRealPontosClicados(List<Ponto> realPontosClicados) {
+        this.realPontosClicados = realPontosClicados;
     }
 }
