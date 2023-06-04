@@ -45,6 +45,9 @@ public class MenuController {
     private TitledPane algorithmspane;
 
     @FXML
+    private TextField inputBasier;
+
+    @FXML
     private TextField textx;
 
     @FXML
@@ -297,7 +300,6 @@ public class MenuController {
 
                 break;
             }
-
             case ("Polilinha"): {
                 Button selecionarPontos = new Button("Limpar Pontos Selecionados");
                 selecionarPontos.setOnAction(event -> {
@@ -378,12 +380,24 @@ public class MenuController {
 
             case ("Rotação"): {
                 TextField angulo = new TextField();
-                TextField pontopivo = new TextField();
+                TextField pontopivox = createTextField("Pivô X");
+                TextField pontopivoy = createTextField("Pivô Y");
+
                 angulo.setPromptText("e.g: 30º");
-                pontopivo.setPromptText("Pivô");
                 Button b1 = new Button("Executar");
 
-                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivo), b1));
+                b1.setOnAction(e -> {
+                    Double x1 = Double.valueOf(angulo.getText().strip());
+                    Double[] y1 = { Double.valueOf(pontopivox.getText().strip()),
+                            Double.valueOf(pontopivoy.getText().strip()) };
+
+                    consoleController.executeAlgorithm(
+                            String.format("Rotacao %.2f %.2f %.2f",
+                                    x1, y1[0], y1[1]));
+                    new Thread(() -> Transformacoes.rotacao(consoleController, this, malhaController, -x1, y1)).start();
+                });
+
+                titledPane.setContent(new VBox(new HBox(angulo), new HBox(pontopivox, pontopivoy), b1));
                 break;
             }
 
@@ -391,6 +405,16 @@ public class MenuController {
                 TextField x001 = createTextField("x");
                 TextField y001 = createTextField("y");
                 Button b1 = new Button("Executar");
+
+                b1.setOnAction(e -> {
+                    Integer x1 = Integer.valueOf(x001.getText().strip());
+                    Integer y1 = Integer.valueOf(y001.getText().strip());
+
+                    consoleController.executeAlgorithm(
+                            String.format("Translacao %d %d",
+                                    x1, y1));
+                    Transformacoes.translacao(consoleController, this, malhaController, x1, y1);
+                });
 
                 titledPane.setContent(new VBox(new HBox(x001, y001), b1));
                 break;
@@ -411,7 +435,6 @@ public class MenuController {
             case ("Perspectiva"): {
                 break;
             }
-
             default: {
                 throw new IllegalStateException();
             }
