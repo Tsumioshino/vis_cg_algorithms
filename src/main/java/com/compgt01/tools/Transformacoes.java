@@ -127,6 +127,26 @@ public class Transformacoes {
         scanlineFill(console, malhaModel, row + 1, col); // Linha abaixo
     }
 
+    public static List<Ponto> scalePontos(MalhaModel malha, List<Ponto> pontos, int pivotX, int pivotY, double scaleX,
+            double scaleY) {
+        List<Ponto> pontosTransformados = scalePontos(pontos, pivotX, pivotY, scaleX, scaleY);
+
+        return pontosTransformados;
+    }
+
+    public static List<Ponto> scalePontos(List<Ponto> pontos, int pivotX, int pivotY, double scaleX, double scaleY) {
+        List<Ponto> pontosTransformados = new ArrayList<>();
+
+        for (Ponto ponto : pontos) {
+            int x = ponto.getX();
+            int y = ponto.getY();
+            pontosTransformados.add(new Ponto((int) (pivotX + (x - pivotX) * scaleX),
+                    (int) (pivotY + (y - pivotY) * scaleY)));
+        }
+
+        return pontosTransformados;
+    }
+
     public static void bresenham(ConsoleController console,
             MenuController menuController,
             MalhaController malhaController,
@@ -165,6 +185,24 @@ public class Transformacoes {
                 console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
             }
 
+        });
+    }
+
+    public static void bresenhamRealPoint(ConsoleController console,
+            MalhaController malhaController,
+            Ponto init, Ponto fim) {
+
+        console.redirectToConsole(String.format("Pintando de %s a %s.\n", init, fim));
+
+        Set<Ponto> pontos = calcularPontosReta(init.getX(), init.getY(), fim.getX(), fim.getY());
+        pontos.forEach(e -> {
+            try {
+                System.out.println(e);
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX()][e.getY()]
+                        .setSelected(true);
+            } catch (IndexOutOfBoundsException exception) {
+                console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
+            }
         });
     }
 
@@ -280,10 +318,6 @@ public class Transformacoes {
                 console.redirectToConsole(String.format("x: %s y: %s fora da camada", e[0], e[1], "\n"));
             }
         });
-    }
-
-    public static void main(String[] args) {
-        Set<Ponto> pontos = calcularPontosReta(0, 0, 10, 10);
     }
 
     private static HashSet<Ponto> calcularPontosReta(int x1, int y1, int x2, int y2) {
