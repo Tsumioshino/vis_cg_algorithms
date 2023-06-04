@@ -78,6 +78,9 @@ public class MalhaController {
                     CheckBoxXY checkBoxXY = (CheckBoxXY) event.getSource();
                     pontosClicados.add(checkBoxXY.getPonto());
                     System.out.println(checkBoxXY.getPonto());
+                    System.out.println(String.format("Real Ponto %d %d", checkBoxXY.getPonto().getX() + getMalhaModel()
+                            .getX(),
+                            getMalhaModel().getY() - checkBoxXY.getPonto().getY()));
                 });
                 gridpane.add(getMalhaModel().getGridCheckBox()[x][y], x, y);
             }

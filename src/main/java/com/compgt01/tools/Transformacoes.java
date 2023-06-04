@@ -8,6 +8,7 @@ import java.util.Set;
 import com.compgt01.controller.ConsoleController;
 import com.compgt01.controller.MalhaController;
 import com.compgt01.controller.MenuController;
+import com.compgt01.model.MalhaModel;
 import com.compgt01.model.Ponto;
 import com.compgt01.model.PontoBasier;
 
@@ -51,6 +52,79 @@ public class Transformacoes {
         result[1] = Integer.parseInt(coordenada.substring(1, commaLoc));
 
         return result;
+    }
+
+    public static void recursiveFill(ConsoleController console, MalhaModel malhaModel, Ponto ponto) {
+        recursiveFill(console, malhaModel, ponto.getX(), ponto.getY());
+    }
+
+    private static void recursiveFill(ConsoleController console, MalhaModel malhaModel, int row, int col) {
+
+        int rows = malhaModel.getX() * 2 + 1;
+        int cols = malhaModel.getY() * 2 + 1;
+
+        // Verificar se as coordenadas estão dentro dos limites da grade
+        if (row < 0 || row >= rows || col < 0 || col >= cols) {
+            return;
+        }
+
+        // Verificar se a célula já está preenchida ou se é uma borda
+        if (malhaModel.getGridCheckBox()[row][col].isSelected()) {
+            return;
+        }
+
+        // Preencher a célula atual com a cor especificada
+
+        malhaModel.getGridCheckBox()[row][col].setSelected(true);
+
+        // Chamar recursivamente o preenchimento para as células vizinhas
+        recursiveFill(console, malhaModel, row - 1, col); // Célula acima
+        recursiveFill(console, malhaModel, row + 1, col); // Célula abaixo
+        recursiveFill(console, malhaModel, row, col - 1); // Célula à esquerda
+        recursiveFill(console, malhaModel, row, col + 1); // Célula à direita
+    }
+
+    public static void scanlineFill(ConsoleController console, MalhaModel malhaModel, Ponto ponto) {
+        scanlineFill(console, malhaModel, ponto.getY(), ponto.getX());
+    }
+
+    public static void scanlineFill(ConsoleController console, MalhaModel malhaModel, int row, int col) {
+
+        int rows = malhaModel.getY() * 2 + 1;
+        int cols = malhaModel.getX() * 2 + 1;
+
+        // Verificar se as coordenadas estão dentro dos limites da grade
+        if (row < 0 || row >= rows || col < 0 || col >= cols) {
+            return;
+        }
+
+        // Verificar se a célula já está preenchida ou se é uma borda
+        if (malhaModel.getGridCheckBox()[col][row].isSelected()) {
+            return;
+        }
+
+        // Encontrar a coordenada do limite esquerdo
+        int left = col;
+        while (left >= 0 && !malhaModel.getGridCheckBox()[left][row].isSelected()) {
+            left--;
+        }
+        left++;
+
+        // Encontrar a coordenada do limite direito
+        int right = col;
+        while (right < cols && !malhaModel.getGridCheckBox()[right][row].isSelected()) {
+            right++;
+        }
+        right--;
+
+        // Preencher a linha atual entre os limites esquerdo e direito
+        for (int c = left; c <= right; c++) {
+            malhaModel.getGridCheckBox()[c][row].setSelected(true);
+        }
+
+        // Chamar recursivamente o algoritmo de varredura para as linhas acima e abaixo
+        scanlineFill(console, malhaModel, row - 1, col); // Linha acima
+        scanlineFill(console, malhaModel, row + 1, col); // Linha abaixo
     }
 
     public static void bresenham(ConsoleController console,
@@ -262,7 +336,6 @@ public class Transformacoes {
             }
 
         });
-
     }
 
     private static void desenharCirculo(Set<Ponto> pontos, int radius, int centerX, int centerY) {
