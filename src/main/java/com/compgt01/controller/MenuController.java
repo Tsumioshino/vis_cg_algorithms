@@ -44,6 +44,9 @@ public class MenuController {
     private TitledPane algorithmspane;
 
     @FXML
+    private TextField inputBasier;
+
+    @FXML
     private TextField textx;
 
     @FXML
@@ -288,7 +291,6 @@ public class MenuController {
 
                 break;
             }
-
             case ("Polilinha"): {
                 break;
             }
@@ -362,7 +364,6 @@ public class MenuController {
             case ("Perspectiva"): {
                 break;
             }
-
             default: {
                 throw new IllegalStateException();
             }
