@@ -69,7 +69,29 @@ public class Transformacoes {
             }
 
         });
+    }
 
+    public static void bresenham(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
+            Ponto init, Ponto fim) {
+
+        console.redirectToConsole(String.format("Pintando de %s a %s.\n", init, fim));
+
+        System.out.println(String.format("%d %d %d %d", init.getX(), init.getY(), fim.getX(), fim.getY()));
+        Set<Ponto> pontos = calcularPontosReta(init.getX(), init.getY(), fim.getX(), fim.getY());
+        System.out.println(pontos.isEmpty());
+        pontos.forEach(e -> {
+            try {
+                System.out.println(e);
+                malhaController.getMalhaModel().getGridCheckBox()[e.getX()
+                        + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
+                        .setSelected(true);
+            } catch (IndexOutOfBoundsException exception) {
+                console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
+            }
+
+        });
     }
 
     public static void translacao(ConsoleController console,
@@ -274,7 +296,7 @@ public class Transformacoes {
 
     /**
      * Basier Init
-     * 
+     *
      * @param tInicio
      * @param tFim
      * @param incremento

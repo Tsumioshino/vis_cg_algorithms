@@ -21,4 +21,8 @@ public class ConsoleController {
         console.setWrapText(true);
         console.appendText(text + "\n");
     }
+
+    public void clearConsole() {
+        console.clear();
+    }
 }

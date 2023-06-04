@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.compgt01.model.MalhaModel;
+import com.compgt01.model.Ponto;
 import com.compgt01.model.PontoBasier;
 import com.compgt01.tools.Transformacoes;
 
@@ -25,6 +26,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -158,7 +160,14 @@ public class MenuController {
                                     x1, y1, x2, y2));
                     Transformacoes.bresenham(consoleController, this, malhaController, x1, y1, x2, y2);
                 });
-                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1));
+                List<Ponto> clicados = getMalhaController().getPontosClicados();
+                Button desenhar = new Button("Desenhar clicando");
+                desenhar.setOnAction(e -> {
+                    Transformacoes.bresenham(consoleController, this, malhaController, clicados.get(0),
+                            clicados.get(1));
+                    getMalhaController().getPontosClicados().clear();
+                });
+                titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1, desenhar));
                 break;
             }
             case ("Circulo"): {
@@ -292,6 +301,31 @@ public class MenuController {
                 break;
             }
             case ("Polilinha"): {
+                Button selecionarPontos = new Button("Limpar Pontos Selecionados");
+
+                selecionarPontos.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    getMalhaController().getPontosClicados().clear();
+                });
+
+                Button executarPolilinha = new Button("Desenhar");
+
+                executarPolilinha.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    List<Ponto> clicados = getMalhaController().getPontosClicados();
+                    for (int i = 0; i < clicados.size(); i++) {
+                        Ponto primeiro = clicados.get(i);
+                        if (i + 1 < clicados.size()) {
+                            Ponto segundo = clicados.get(i + 1);
+                            System.out.println("Par: " + primeiro + ", " + segundo);
+                            Transformacoes.bresenham(consoleController, this, malhaController, primeiro, segundo);
+                        } else {
+                            Transformacoes.bresenham(consoleController, this, malhaController, primeiro,
+                                    clicados.get(0));
+                        }
+                    }
+                    getMalhaController().getPontosClicados().clear();
+                });
+
+                titledPane.setContent(new VBox(new HBox(selecionarPontos), new HBox(executarPolilinha)));
                 break;
             }
 
@@ -435,6 +469,7 @@ public class MenuController {
                 malhaController.getMalhaModel().getGridCheckBox()[i][j].setSelected(false);
             }
         }
+        consoleController.clearConsole();
     }
 
     @FXML
