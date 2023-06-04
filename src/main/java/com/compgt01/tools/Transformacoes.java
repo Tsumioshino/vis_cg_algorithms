@@ -12,6 +12,8 @@ import com.compgt01.model.MalhaModel;
 import com.compgt01.model.Ponto;
 import com.compgt01.model.PontoBasier;
 
+import javafx.scene.control.CheckBox;
+
 public class Transformacoes {
 
     /**
@@ -129,10 +131,6 @@ public class Transformacoes {
             double scaleY) {
         List<Ponto> pontosTransformados = scalePontos(pontos, pivotX, pivotY, scaleX, scaleY);
 
-        // for (Ponto ponto : pontosTransformados) {
-        // malha.getGridCheckBox()[ponto.getX()][ponto.getY()].setSelected(true);
-        // }
-
         return pontosTransformados;
     }
 
@@ -154,12 +152,9 @@ public class Transformacoes {
             MalhaController malhaController,
             int centerX, int centerY, int destX, int destY) {
 
-        System.out.println(String.format("%d %d %d %d", centerX, centerY, destX, destY));
         Set<Ponto> pontos = calcularPontosReta(centerX, centerY, destX, destY);
-        System.out.println(pontos.isEmpty());
         pontos.forEach(e -> {
             try {
-                System.out.println(e);
                 malhaController.getMalhaModel().getGridCheckBox()[e.getX()
                         + menuController.getMalhaModel().getX()][menuController.getMalhaModel().getY() - e.getY()]
                         .setSelected(true);
@@ -207,6 +202,120 @@ public class Transformacoes {
                         .setSelected(true);
             } catch (IndexOutOfBoundsException exception) {
                 console.redirectToConsole(String.format("x: %d y: %d fora da camada", e.getX(), e.getY(), "\n"));
+            }
+        });
+    }
+
+    public static void translacao(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
+            int x1, int y1) {
+
+        CheckBox[][] gridCheckBox = malhaController.getMalhaModel().getGridCheckBox();
+        CheckBox[][] gridCheckBoxCopy = new CheckBox[gridCheckBox.length][];
+
+        for (int i = 0; i < gridCheckBox.length; i++) {
+            gridCheckBoxCopy[i] = new CheckBox[gridCheckBox[i].length];
+            for (int j = 0; j < gridCheckBox[i].length; j++) {
+                CheckBox originalCheckBox = gridCheckBox[i][j];
+                CheckBox copiedCheckBox = new CheckBox();
+                copiedCheckBox.setSelected(originalCheckBox.isSelected());
+                // Copy other properties as needed
+                gridCheckBoxCopy[i][j] = copiedCheckBox;
+            }
+        }
+        if (x1 >= 0 && y1 >= 0) {
+            for (int i = (menuController.getMalhaModel().getX() * 2 + 1) - 1; i >= 0; i--) {
+                for (int j = (menuController.getMalhaModel().getY() * 2 + 1) - 1; j >= 0; j--) {
+                    CheckBox checkbox = gridCheckBoxCopy[i][j];
+                    if (checkbox.isSelected()) {
+                        try {
+                            gridCheckBox[i][j].setSelected(false);
+                            gridCheckBox[i + x1][j - y1].setSelected(true);
+                        } catch (IndexOutOfBoundsException exception) {
+                            console.redirectToConsole(
+                                    String.format("x: %d y: %d fora da camada", i - menuController.getMalhaModel()
+                                            .getX() + x1, j - menuController.getMalhaModel().getY() - y1, "\n"));
+
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i <= (menuController.getMalhaModel().getX() * 2 + 1) - 1; i++) {
+                for (int j = 0; j <= (menuController.getMalhaModel().getY() * 2 + 1) - 1; j++) {
+                    CheckBox checkbox = gridCheckBoxCopy[i][j];
+                    if (checkbox.isSelected()) {
+                        try {
+                            gridCheckBox[i][j].setSelected(false);
+                            gridCheckBox[i + x1][j - y1].setSelected(true);
+                        } catch (IndexOutOfBoundsException exception) {
+                            console.redirectToConsole(
+                                    String.format("x: %d y: %d fora da camada", i - menuController.getMalhaModel()
+                                            .getX() + x1, j - menuController.getMalhaModel().getY() - y1, "\n"));
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static int[] rotateVector(int[] vector, Double angle, Double[] pivot) { // Convert angle from degrees
+                                                                                   // to radians
+        double angleRad = Math.toRadians(angle);
+
+        // Perform translation to pivot point
+        double translatedX = vector[0] - pivot[0];
+        double translatedY = vector[1] - pivot[1];
+
+        // Perform rotation around the pivot point
+        double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
+        double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
+
+        // Perform translation back from the pivot point
+        double finalX = rotatedX + pivot[0];
+        double finalY = rotatedY + pivot[1];
+        // Return rotated vector
+
+        return new int[] { (int) Math.round(finalX), (int) Math.round(finalY) };
+    }
+
+    public static void rotacao(ConsoleController console,
+            MenuController menuController,
+            MalhaController malhaController,
+            Double angulo, Double[] pivo) {
+        List<int[]> rots = new ArrayList<>();
+        CheckBox[][] gridCheckBox = malhaController.getMalhaModel().getGridCheckBox();
+        int x = (menuController.getMalhaModel().getX() * 2 + 1);
+        int y = (menuController.getMalhaModel().getY() * 2 + 1);
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                CheckBox checkbox = gridCheckBox[i][j];
+                if (checkbox.isSelected()) {
+                    try {
+                        int[] vec = { i - menuController.getMalhaModel().getX(),
+                                j - menuController.getMalhaModel().getY() };
+                        rots.add(rotateVector(vec, angulo, pivo));
+                        checkbox.setSelected(false);
+
+                    } catch (IndexOutOfBoundsException exception) {
+                        console.redirectToConsole(
+                                String.format("x: %d y: %d fora da camada", x - i, y - j, "\n"));
+                    }
+                }
+            }
+        }
+
+        rots.forEach(e -> {
+            try {
+                malhaController.getMalhaModel()
+                        .getGridCheckBox()[e[0] + menuController.getMalhaModel()
+                                .getX()][menuController.getMalhaModel()
+                                        .getY() + e[1]]
+                        .setSelected(true);
+            } catch (IndexOutOfBoundsException exception) {
+                console.redirectToConsole(String.format("x: %s y: %s fora da camada", e[0], e[1], "\n"));
             }
         });
     }

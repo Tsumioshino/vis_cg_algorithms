@@ -34,6 +34,7 @@ public class MalhaController {
     }
 
     public GridPane getGridPane() {
+
         return this.gridPane;
     }
 
@@ -93,7 +94,6 @@ public class MalhaController {
         container1.getChildren().add(gridpane);
 
         container1.setFillHeight(false);
-
         return container1;
     }
 
@@ -141,3 +141,4 @@ public class MalhaController {
         this.realPontosClicados = realPontosClicados;
     }
 }
+
