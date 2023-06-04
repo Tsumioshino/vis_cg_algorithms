@@ -5,7 +5,4 @@
 
 <HBox fx:id="root2"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.compgt01.controller.MalhaController">
-      <children>
-
-      </children>
 </HBox>

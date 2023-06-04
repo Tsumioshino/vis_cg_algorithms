@@ -2,6 +2,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -12,45 +13,32 @@
 
 
 <TitledPane fx:id="root1"
-    xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.compgt01.controller.MenuController">
-    <BorderPane>
-        <left>
-            <VBox>
-                <TextField fx:id="textx" prefColumnCount="3" />
-                <TextField fx:id="texty" prefColumnCount="3" />
+    xmlns:fx="http://javafx.com/fxml/1" 
+    fx:controller="com.compgt01.controller.MenuController"
+    text="Painel de Controle">
+    <VBox>
+        <HBox>
+            <TextField fx:id="textx" prefColumnCount="3" promptText="x"/>
+            <TextField fx:id="texty" prefColumnCount="3" promptText="y"/>
+        </HBox>
+            <HBox>
+            <Button fx:id="clear" text="Clear" onAction="#onClear" />
+            <Button fx:id="submit" text="Submit" onAction="#onSubmit" />
+        </HBox>
+        <TitledPane fx:id="algorithmspane" text="Algoritmos"/>
 
-                <Button fx:id="submit" text="Submit" onAction="#onSubmit" />
-                <Button fx:id="clear" text="Clear" onAction="#onClear" />
-
-                <ChoiceBox fx:id="choiceBox" />
-
-                <TitledPane text="Controle de Tamanho">
-                    <content>
-                        <VBox>
-                            <Label text="x" />
-                            <Slider fx:id="addcolumnx" min="1" max="12" value="3" disable="true"/>
-                            <Label text="y" />
-                            <Slider fx:id="addrowy" min="1" max="12" value="3" disable="true"/>
-                        </VBox>
-                    </content>
-                </TitledPane>
-
-                <TitledPane text="Controle de Zoom">
-                    <VBox>
-                        <Label text="Zoom" />
-                        <Slider fx:id="zoom" min="1" max="5" value="3" />
-                    </VBox>
-                </TitledPane>
-                <TextField fx:id="newx" prefColumnCount="3" />
-                <TextField fx:id="newy" prefColumnCount="3" />
-                <Button fx:id="clear" text="Destroy" onAction="#onDestruction" />
-                <TextField fx:id="x1" prefColumnCount="3" />
-                <TextField fx:id="y1" prefColumnCount="3" />
-                <TextField fx:id="x2" prefColumnCount="3" />
-                <TextField fx:id="y2" prefColumnCount="3" />
-                <Label text="Input pontos de Controle" />
-                <TextField fx:id="inputBasier" prefColumnCount="3" />
-            </VBox>
-        </left>
-    </BorderPane>
+        <TitledPane text="Configurações" expanded="false">
+            <TitledPane text="Nova Malha" expanded="false">
+                <VBox>
+                    <HBox>
+                        <TextField fx:id="newx" prefColumnCount="3" promptText="X"/>
+                        <TextField fx:id="newy" prefColumnCount="3" promptText="Y"/>
+                    </HBox>
+                    <Button fx:id="clear" 
+                    text="Executar" 
+                    onAction="#onDestruction"/>  
+              </VBox>
+            </TitledPane>
+        </TitledPane>
+    </VBox>
 </TitledPane>
