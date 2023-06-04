@@ -325,8 +325,8 @@ public class Transformacoes {
 
         int dx = Math.abs(x2 - x1);
         int dy = Math.abs(y2 - y1);
-        int sx = x1 < x2 ? 1 : -1;
-        int sy = y1 < y2 ? 1 : -1;
+        int sx = x1 < x2 ? 1 : -1; // se para esquerda ou direita
+        int sy = y1 < y2 ? 1 : -1; // se para cima ou para baixo
         int err = dx - dy;
 
         int x = x1;

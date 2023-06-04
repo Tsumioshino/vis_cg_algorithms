@@ -532,6 +532,7 @@ public class MenuController {
                 malhaController.getMalhaModel().getGridCheckBox()[i][j].setSelected(false);
             }
         }
+        limparPontos();
         consoleController.clearConsole();
     }
 
