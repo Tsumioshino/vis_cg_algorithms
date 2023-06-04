@@ -26,6 +26,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -159,11 +160,11 @@ public class MenuController {
                                     x1, y1, x2, y2));
                     Transformacoes.bresenham(consoleController, this, malhaController, x1, y1, x2, y2);
                 });
-                List<Ponto> clicados = getMalhaController().getPontosClicados();
                 Button desenhar = new Button("Desenhar clicando");
-                desenhar.setOnAction(e -> {
-                    new Thread(() -> Transformacoes.bresenham(consoleController, this, malhaController, clicados.get(0),
-                            clicados.get(1))).start();
+                desenhar.addEventFilter(MouseEvent.MOUSE_CLICKED,e -> {
+                    List<Ponto> clicados = getMalhaController().getPontosClicados();
+                    Transformacoes.bresenham(consoleController, this, malhaController, clicados.get(0),
+                            clicados.get(1));
                     getMalhaController().getPontosClicados().clear();
                 });
                 titledPane.setContent(new VBox(new HBox(x001, y001), new HBox(x002, y002), b1, desenhar));
